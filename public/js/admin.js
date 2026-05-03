@@ -46,6 +46,7 @@ async function adminLogin(e) {
       console.log('✅ Login thành công, token:', result.token);
       adminToken = result.token;
       localStorage.setItem('adminToken', adminToken);
+      localStorage.setItem('adminUsername', username);
       console.log('✅ Token saved to localStorage');
       showAdminPanel();
       await loadDashboard();
@@ -86,10 +87,21 @@ function showDashboard() {
 function showTickets() {
   document.getElementById('dashboard').style.display = 'none';
   document.getElementById('tickets-section').style.display = 'block';
+  document.getElementById('change-password-section').style.display = 'none';
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
   document.querySelectorAll('.nav-item')[1].classList.add('active');
-  
+
   loadAllTickets();
+}
+
+function showChangePassword() {
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('tickets-section').style.display = 'none';
+  document.getElementById('change-password-section').style.display = 'block';
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  document.querySelectorAll('.nav-item')[2].classList.add('active');
+  document.getElementById('password-message').textContent = '';
+  document.getElementById('change-password-form').reset();
 }
 
 function logout() {
@@ -321,4 +333,58 @@ function formatPriority(priority) {
     'urgent': '🔴🔴 Cấp bách'
   };
   return priorities[priority] || priority;
+}
+
+// ============ CHANGE PASSWORD ============
+async function changePassword(e) {
+  e.preventDefault();
+
+  const currentPassword = document.getElementById('current-password').value;
+  const newPassword = document.getElementById('new-password').value;
+  const confirmPassword = document.getElementById('confirm-password').value;
+  const messageDiv = document.getElementById('password-message');
+
+  if (newPassword !== confirmPassword) {
+    messageDiv.innerHTML = '<span style="color: red;">❌ Mật khẩu xác nhận không trùng khớp!</span>';
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    messageDiv.innerHTML = '<span style="color: red;">❌ Mật khẩu phải có ít nhất 6 ký tự!</span>';
+    return;
+  }
+
+  // Get username from localStorage (from login session)
+  const username = localStorage.getItem('adminUsername') || 'admin';
+
+  try {
+    const response = await fetch('/api/admin/change-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-admin-token': adminToken
+      },
+      body: JSON.stringify({
+        username: username,
+        old_password: currentPassword,
+        new_password: newPassword
+      })
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      messageDiv.innerHTML = '<span style="color: green;">✅ ' + result.message + '</span>';
+      document.getElementById('change-password-form').reset();
+      setTimeout(() => {
+        alert('Mật khẩu đã được đổi thành công! Vui lòng đăng nhập lại.');
+        logout();
+      }, 1500);
+    } else {
+      messageDiv.innerHTML = '<span style="color: red;">❌ Lỗi: ' + result.error + '</span>';
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    messageDiv.innerHTML = '<span style="color: red;">❌ Lỗi kết nối!</span>';
+  }
 }

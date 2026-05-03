@@ -171,6 +171,48 @@ app.delete('/api/admin/tickets/:id', (req, res) => {
   );
 });
 
+// Admin: Đổi mật khẩu
+app.post('/api/admin/change-password', (req, res) => {
+  const token = req.headers['x-admin-token'];
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const { username, old_password, new_password } = req.body;
+
+  if (!username || !old_password || !new_password) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  if (new_password.length < 6) {
+    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  }
+
+  // Verify old password
+  db.get(
+    "SELECT * FROM admin_users WHERE username = ? AND password = ?",
+    [username, old_password],
+    (err, user) => {
+      if (err || !user) {
+        return res.status(401).json({ error: 'Old password is incorrect' });
+      }
+
+      // Update to new password
+      db.run(
+        "UPDATE admin_users SET password = ? WHERE username = ?",
+        [new_password, username],
+        function(err) {
+          if (err) {
+            res.status(500).json({ error: err.message });
+            return;
+          }
+          res.json({ success: true, message: 'Password changed successfully' });
+        }
+      );
+    }
+  );
+});
+
 // Admin: Lấy trang admin
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'));

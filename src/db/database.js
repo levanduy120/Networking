@@ -64,11 +64,16 @@ db.serialize(() => {
   db.get("SELECT COUNT(*) as count FROM services", (err, row) => {
     if (row && row.count === 0) {
       const services = [
-        { name: 'Network Support', description: 'Hỗ trợ mạng, WiFi, VPN' },
-        { name: 'Hardware Support', description: 'Sửa chữa máy tính, máy in' },
-        { name: 'Software Support', description: 'Hỗ trợ phần mềm, license' },
-        { name: 'Email Support', description: 'Cấu hình email, hỗ trợ Outlook' },
-        { name: 'User Training', description: 'Đào tạo sử dụng phần mềm' }
+        { name: 'Network Infrastructure Setup', description: 'Thiết kế, triển khai hạ tầng mạng enterprise' },
+        { name: 'Network Maintenance & Support', description: 'Bảo trì, hỗ trợ mạng 24/7' },
+        { name: 'Security & Firewall', description: 'Cấu hình firewall, VPN, bảo mật mạng' },
+        { name: 'Wireless Solution', description: 'Giải pháp WiFi, mesh network, cấp phát IP' },
+        { name: 'Office Helpdesk', description: 'Hỗ trợ user, máy tính, máy in, phần mềm' },
+        { name: 'IT Consulting', description: 'Tư vấn giải pháp IT, lên kế hoạch nâng cấp cơ sở hạ tầng' },
+        { name: 'Remote Support', description: 'Hỗ trợ từ xa qua RDP, TeamViewer' },
+        { name: 'Network Monitoring', description: 'Giám sát mạng, báo cáo hiệu suất' },
+        { name: 'Cabling & Hardware', description: 'Lắp đặt dây cáp, switch, router, cấp phát PoE' },
+        { name: 'System Administration', description: 'Quản lý server, backup, disaster recovery' }
       ];
 
       services.forEach(service => {
@@ -80,13 +85,12 @@ db.serialize(() => {
     }
   });
 
-  // Thêm admin user mặc định (username: admin, password: admin123)
+  // Thêm admin user mặc định KHÔNG LÀM NAY - dùng setup-admins.js thay
+  // Khi production setup, tất cả user được thêm qua setup-admins.js
   db.get("SELECT COUNT(*) as count FROM admin_users", (err, row) => {
     if (row && row.count === 0) {
-      db.run(
-        "INSERT INTO admin_users (username, password) VALUES (?, ?)",
-        ['admin', 'admin123'] // Trong production cần hash password
-      );
+      // KHÔNG insert default user - yêu cầu chạy setup-admins.js
+      console.log('⚠️  No admin users found. Please run: node setup-admins.js');
     }
   });
 });

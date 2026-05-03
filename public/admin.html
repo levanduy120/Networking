@@ -21,7 +21,7 @@
         </div>
         <button type="submit" class="btn-primary">Đăng Nhập</button>
       </form>
-      <p class="hint">Mặc định: admin / admin123</p>
+      <p class="hint">Sử dụng credentials được cấp bởi IT Team</p>
     </div>
   </div>
 
@@ -32,6 +32,7 @@
       <nav class="admin-nav">
         <a href="#" onclick="showDashboard()" class="nav-item active">📊 Dashboard</a>
         <a href="#" onclick="showTickets()" class="nav-item">🎫 Tickets</a>
+        <a href="#" onclick="showChangePassword()" class="nav-item">🔐 Đổi Mật Khẩu</a>
         <a href="#" onclick="logout()" class="nav-item logout">🚪 Logout</a>
       </nav>
     </aside>
@@ -60,7 +61,7 @@
       <!-- Tickets Management -->
       <div id="tickets-section" class="section" style="display: none;">
         <h2>Quản Lý Tickets</h2>
-        
+
         <div class="filter-bar">
           <select id="filter-status">
             <option value="">Tất cả trạng thái</option>
@@ -87,6 +88,29 @@
           <tbody id="tickets-body">
           </tbody>
         </table>
+      </div>
+
+      <!-- Change Password Section -->
+      <div id="change-password-section" class="section" style="display: none;">
+        <h2>Đổi Mật Khẩu</h2>
+        <div class="form-container">
+          <form id="change-password-form" onsubmit="changePassword(event)">
+            <div class="form-group">
+              <label for="current-password">Mật khẩu hiện tại:</label>
+              <input type="password" id="current-password" required>
+            </div>
+            <div class="form-group">
+              <label for="new-password">Mật khẩu mới:</label>
+              <input type="password" id="new-password" required minlength="6">
+            </div>
+            <div class="form-group">
+              <label for="confirm-password">Xác nhận mật khẩu mới:</label>
+              <input type="password" id="confirm-password" required minlength="6">
+            </div>
+            <button type="submit" class="btn-primary">Đổi Mật Khẩu</button>
+          </form>
+          <div id="password-message"></div>
+        </div>
       </div>
     </main>
   </div>

@@ -408,6 +408,48 @@ body {
   font-weight: bold;
 }
 
+/* ============ CHANGE PASSWORD FORM ============ */
+.form-container {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+}
+
+#password-message {
+  margin-top: 20px;
+  padding: 12px;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
 /* ============ RESPONSIVE ============ */
 @media (max-width: 768px) {
   .sidebar {
