@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duy Network - Giải Pháp IT Chuyên Nghiệp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">🌐 Duy Network</div>
+      <ul class="nav-links">
+        <li><a href="#services">Dịch vụ</a></li>
+        <li><a href="#create-ticket">Tạo Ticket</a></li>
+        <li><a href="#track-ticket">Theo dõi</a></li>
+        <li><a href="/admin" class="btn-admin">Admin</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>Duy Network - Giải Pháp IT Chuyên Nghiệp</h1>
+      <p>Hỗ trợ hạ tầng mạng, IT, Helpdesk 24/7 cho doanh nghiệp</p>
+      <button class="btn-primary" onclick="scrollToSection('create-ticket')">Tạo Ticket Ngay</button>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section id="services" class="services">
+    <div class="container">
+      <h2>Dịch Vụ Hỗ Trợ</h2>
+      <div id="services-grid" class="services-grid">
+        <!-- Services sẽ được load từ API -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Create Ticket Section -->
+  <section id="create-ticket" class="create-ticket">
+    <div class="container">
+      <h2>Tạo Yêu Cầu Hỗ Trợ</h2>
+      <form id="ticket-form" class="form">
+        <div class="form-group">
+          <label for="customer_name">Tên của bạn *</label>
+          <input type="text" id="customer_name" name="customer_name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="customer_email">Email *</label>
+          <input type="email" id="customer_email" name="customer_email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="customer_phone">Số điện thoại</label>
+          <input type="tel" id="customer_phone" name="customer_phone">
+        </div>
+
+        <div class="form-group">
+          <label for="service_id">Chọn dịch vụ *</label>
+          <select id="service_id" name="service_id" required>
+            <option value="">-- Chọn dịch vụ --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="title">Tiêu đề vấn đề *</label>
+          <input type="text" id="title" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Mô tả chi tiết *</label>
+          <textarea id="description" name="description" rows="5" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="priority">Mức độ ưu tiên</label>
+          <select id="priority" name="priority">
+            <option value="low">Thấp</option>
+            <option value="medium" selected>Bình thường</option>
+            <option value="high">Cao</option>
+            <option value="urgent">Cấp bách</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary">Gửi Yêu Cầu</button>
+      </form>
+      <div id="form-message" class="form-message" style="display: none;"></div>
+    </div>
+  </section>
+
+  <!-- Track Ticket Section -->
+  <section id="track-ticket" class="track-ticket">
+    <div class="container">
+      <h2>Theo Dõi Ticket</h2>
+      <div class="track-form">
+        <input type="text" id="search-code" placeholder="Nhập mã ticket (VD: TK1688...) " />
+        <button class="btn-primary" onclick="searchTicket()">Tìm Kiếm</button>
+      </div>
+      <div id="ticket-result" class="ticket-result" style="display: none;"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Duy Network</h3>
+          <p>Giải pháp IT chuyên nghiệp cho doanh nghiệp</p>
+        </div>
+        <div class="footer-section">
+          <h3>Liên Kết</h3>
+          <ul>
+            <li><a href="https://www.linkedin.com/in/duylenetworktechnical/" target="_blank">LinkedIn</a></li>
+            <li><a href="#services">Dịch vụ</a></li>
+            <li><a href="#create-ticket">Tạo Ticket</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Hỗ Trợ</h3>
+          <p>Email: support@dunetwork.local</p>
+          <p>Hotline: 0987654321</p>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <p class="footer-copyright">&copy; 2026 Duy Network. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

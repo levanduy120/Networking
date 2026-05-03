@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Print</w:View>
+      <w:Zoom>100</w:Zoom>
+      <w:DoNotOptimizeForBrowser/>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <title>Tài Liệu Bàn Giao Hệ Thống - Duy Network Helpdesk</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 2.54cm 2.54cm 2.54cm 2.54cm;
+      mso-header-margin: 1.5cm;
+      mso-footer-margin: 1.5cm;
+    }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 13pt;
+      color: #000000;
+      background: #ffffff;
+      margin: 0;
+      padding: 40px 60px;
+      line-height: 1.6;
+    }
+    /* Cover page */
+    .cover {
+      text-align: center;
+      padding: 60px 20px 40px 20px;
+      border-bottom: 3px solid #1a3c5e;
+      margin-bottom: 40px;
+      page-break-after: always;
+    }
+    .cover .logo-text {
+      font-size: 32pt;
+      font-weight: bold;
+      color: #1a3c5e;
+      letter-spacing: 2px;
+      margin-bottom: 10px;
+    }
+    .cover .logo-sub {
+      font-size: 14pt;
+      color: #2980b9;
+      margin-bottom: 50px;
+      letter-spacing: 1px;
+    }
+    .cover h1 {
+      font-size: 22pt;
+      color: #1a3c5e;
+      margin: 30px 0 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .cover h2 {
+      font-size: 16pt;
+      color: #2c3e50;
+      font-weight: normal;
+      margin: 5px 0 40px 0;
+    }
+    .cover-table {
+      width: 80%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      font-size: 12pt;
+    }
+    .cover-table td {
+      padding: 8px 15px;
+      border: 1px solid #bdc3c7;
+    }
+    .cover-table td:first-child {
+      background: #1a3c5e;
+      color: white;
+      font-weight: bold;
+      width: 40%;
+    }
+    .cover-table td:last-child {
+      background: #ecf0f1;
+    }
+    .cover-footer {
+      margin-top: 60px;
+      font-size: 11pt;
+      color: #7f8c8d;
+    }
+    /* TOC */
+    .toc {
+      page-break-after: always;
+      padding: 20px 0;
+    }
+    .toc h2 {
+      font-size: 16pt;
+      color: #1a3c5e;
+      border-bottom: 2px solid #1a3c5e;
+      padding-bottom: 8px;
+    }
+    .toc ul {
+      list-style: none;
+      padding: 0;
+    }
+    .toc > ul > li {
+      margin: 10px 0;
+      font-size: 12pt;
+      font-weight: bold;
+    }
+    .toc > ul > li > ul > li {
+      margin: 5px 0 5px 25px;
+      font-size: 11pt;
+      font-weight: normal;
+      color: #2c3e50;
+    }
+    .toc .dot-leader {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dotted #999;
+      padding: 3px 0;
+    }
+    /* Content */
+    h1 { font-size: 18pt; color: #1a3c5e; border-bottom: 2px solid #1a3c5e; padding-bottom: 6px; margin-top: 30px; }
+    h2 { font-size: 14pt; color: #2980b9; margin-top: 20px; border-left: 4px solid #2980b9; padding-left: 10px; }
+    h3 { font-size: 12pt; color: #2c3e50; margin-top: 15px; }
+    p { margin: 8px 0; font-size: 12pt; text-align: justify; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      font-size: 11pt;
+    }
+    table th {
+      background: #1a3c5e;
+      color: white;
+      padding: 8px 10px;
+      text-align: left;
+      font-weight: bold;
+    }
+    table td {
+      padding: 7px 10px;
+      border: 1px solid #bdc3c7;
+      vertical-align: top;
+    }
+    table tr:nth-child(even) td { background: #f8f9fa; }
+    table tr:nth-child(odd) td { background: #ffffff; }
+    code, .code {
+      font-family: "Courier New", monospace;
+      font-size: 10pt;
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .code-block {
+      font-family: "Courier New", monospace;
+      font-size: 10pt;
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 12px 15px;
+      border-radius: 5px;
+      margin: 10px 0;
+      border-left: 4px solid #3498db;
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+    .note {
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-left: 5px solid #ffc107;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 3px;
+      font-size: 11pt;
+    }
+    .important {
+      background: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-left: 5px solid #dc3545;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 3px;
+      font-size: 11pt;
+    }
+    .success {
+      background: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-left: 5px solid #28a745;
+      padding: 10px 15px;
+      margin: 10px 0;
+      border-radius: 3px;
+      font-size: 11pt;
+    }
+    .step {
+      background: #e8f4fd;
+      border: 1px solid #bee5f0;
+      padding: 10px 15px;
+      margin: 8px 0;
+      border-radius: 5px;
+    }
+    .step-num {
+      display: inline-block;
+      background: #1a3c5e;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 24px;
+      font-size: 11pt;
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    ul li { margin: 4px 0; font-size: 12pt; }
+    ol li { margin: 6px 0; font-size: 12pt; }
+    .page-break { page-break-before: always; }
+    .section { margin-top: 25px; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 10pt;
+      font-weight: bold;
+      color: white;
+    }
+    .badge-green { background: #27ae60; }
+    .badge-blue { background: #2980b9; }
+    .badge-orange { background: #e67e22; }
+    .badge-red { background: #e74c3c; }
+    hr { border: none; border-top: 1px solid #bdc3c7; margin: 20px 0; }
+    .footer-note {
+      text-align: center;
+      font-size: 10pt;
+      color: #7f8c8d;
+      margin-top: 30px;
+      border-top: 1px solid #bdc3c7;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== TRANG BÌA ===== -->
+<div class="cover">
+  <div class="logo-text">DUY NETWORK</div>
+  <div class="logo-sub">IT Infrastructure &amp; Support Services</div>
+
+  <h1>Tài Liệu Bàn Giao Hệ Thống</h1>
+  <h2>IT Helpdesk Support Platform</h2>
+
+  <table class="cover-table">
+    <tr>
+      <td>Tên hệ thống</td>
+      <td>Duy Network IT Helpdesk</td>
+    </tr>
+    <tr>
+      <td>Phiên bản</td>
+      <td>1.0.0</td>
+    </tr>
+    <tr>
+      <td>Nền tảng</td>
+      <td>Railway Cloud Platform</td>
+    </tr>
+    <tr>
+      <td>URL hệ thống</td>
+      <td><strong>[ĐIỀN URL SAU KHI DEPLOY]</strong></td>
+    </tr>
+    <tr>
+      <td>Domain</td>
+      <td><strong>[ĐIỀN DOMAIN CỦA BẠN]</strong></td>
+    </tr>
+    <tr>
+      <td>Ngày bàn giao</td>
+      <td>03/05/2026</td>
+    </tr>
+    <tr>
+      <td>Người lập tài liệu</td>
+      <td>IT Team - Duy Network</td>
+    </tr>
+  </table>
+
+  <div class="cover-footer">
+    Tài liệu này là nội bộ của Duy Network. Không chia sẻ bên ngoài tổ chức.
+  </div>
+</div>
+
+<!-- ===== MỤC LỤC ===== -->
+<div class="toc">
+  <h2>MỤC LỤC</h2>
+  <ul>
+    <li>
+      <div class="dot-leader"><span>1. Tổng Quan Hệ Thống</span><span>3</span></div>
+      <ul>
+        <li><div class="dot-leader"><span>1.1 Mô tả hệ thống</span><span>3</span></div></li>
+        <li><div class="dot-leader"><span>1.2 Kiến trúc kỹ thuật</span><span>3</span></div></li>
+        <li><div class="dot-leader"><span>1.3 Tính năng chính</span><span>3</span></div></li>
+      </ul>
+    </li>
+    <li>
+      <div class="dot-leader"><span>2. Thông Tin Hạ Tầng</span><span>4</span></div>
+      <ul>
+        <li><div class="dot-leader"><span>2.1 Railway Cloud Platform</span><span>4</span></div></li>
+        <li><div class="dot-leader"><span>2.2 Cấu trúc thư mục</span><span>4</span></div></li>
+        <li><div class="dot-leader"><span>2.3 Biến môi trường</span><span>5</span></div></li>
+      </ul>
+    </li>
+    <li>
+      <div class="dot-leader"><span>3. Tài Khoản &amp; Thông Tin Đăng Nhập</span><span>5</span></div>
+    </li>
+    <li>
+      <div class="dot-leader"><span>4. Hướng Dẫn Sử Dụng Admin</span><span>6</span></div>
+      <ul>
+        <li><div class="dot-leader"><span>4.1 Đăng nhập hệ thống</span><span>6</span></div></li>
+        <li><div class="dot-leader"><span>4.2 Quản lý ticket</span><span>6</span></div></li>
+        <li><div class="dot-leader"><span>4.3 Phân loại ưu tiên</span><span>7</span></div></li>
+      </ul>
+    </li>
+    <li>
+      <div class="dot-leader"><span>5. API Endpoints</span><span>7</span></div>
+    </li>
+    <li>
+      <div class="dot-leader"><span>6. Quy Trình Vận Hành</span><span>8</span></div>
+      <ul>
+        <li><div class="dot-leader"><span>6.1 Kiểm tra hệ thống hằng ngày</span><span>8</span></div></li>
+        <li><div class="dot-leader"><span>6.2 Backup dữ liệu</span><span>8</span></div></li>
+        <li><div class="dot-leader"><span>6.3 Cập nhật code mới</span><span>9</span></div></li>
+      </ul>
+    </li>
+    <li>
+      <div class="dot-leader"><span>7. Xử Lý Sự Cố</span><span>9</span></div>
+    </li>
+    <li>
+      <div class="dot-leader"><span>8. Chi Phí &amp; Gia Hạn</span><span>10</span></div>
+    </li>
+    <li>
+      <div class="dot-leader"><span>9. Lịch Sử Thay Đổi</span><span>10</span></div>
+    </li>
+  </ul>
+</div>
+
+<!-- ===== SECTION 1 ===== -->
+<div class="page-break"></div>
+<h1>1. TỔNG QUAN HỆ THỐNG</h1>
+
+<h2>1.1 Mô Tả Hệ Thống</h2>
+<p>
+  <strong>Duy Network IT Helpdesk</strong> là hệ thống hỗ trợ kỹ thuật trực tuyến, cho phép khách hàng
+  gửi yêu cầu hỗ trợ IT và theo dõi trạng thái xử lý. Hệ thống được triển khai trên nền tảng đám mây
+  Railway, có thể truy cập 24/7 từ bất kỳ đâu.
+</p>
+
+<table>
+  <tr>
+    <th>Thông tin</th>
+    <th>Chi tiết</th>
+  </tr>
+  <tr>
+    <td>URL chính thức</td>
+    <td><strong>[ĐIỀN URL SAU KHI DEPLOY]</strong></td>
+  </tr>
+  <tr>
+    <td>URL admin</td>
+    <td><strong>[URL]/admin</strong></td>
+  </tr>
+  <tr>
+    <td>Nền tảng cloud</td>
+    <td>Railway (railway.app)</td>
+  </tr>
+  <tr>
+    <td>Repository</td>
+    <td><strong>[ĐIỀN GITHUB REPO URL]</strong></td>
+  </tr>
+  <tr>
+    <td>Branch production</td>
+    <td>main</td>
+  </tr>
+  <tr>
+    <td>Múi giờ</td>
+    <td>UTC+7 (Việt Nam)</td>
+  </tr>
+</table>
+
+<h2>1.2 Kiến Trúc Kỹ Thuật</h2>
+
+<table>
+  <tr>
+    <th>Lớp</th>
+    <th>Công nghệ</th>
+    <th>Phiên bản</th>
+    <th>Vai trò</th>
+  </tr>
+  <tr>
+    <td>Runtime</td>
+    <td>Node.js</td>
+    <td>20 LTS</td>
+    <td>Chạy server-side JavaScript</td>
+  </tr>
+  <tr>
+    <td>Web Framework</td>
+    <td>Express.js</td>
+    <td>4.18.2</td>
+    <td>Xử lý HTTP requests, routing</td>
+  </tr>
+  <tr>
+    <td>Database</td>
+    <td>SQLite3</td>
+    <td>5.1.6</td>
+    <td>Lưu trữ ticket, người dùng, dịch vụ</td>
+  </tr>
+  <tr>
+    <td>Frontend</td>
+    <td>HTML5 + CSS3 + Vanilla JS</td>
+    <td>—</td>
+    <td>Giao diện người dùng và admin</td>
+  </tr>
+  <tr>
+    <td>Cloud Platform</td>
+    <td>Railway</td>
+    <td>—</td>
+    <td>Hosting, CI/CD, Volume, Domain</td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>Lưu ý về Database:</strong> SQLite lưu dữ liệu dưới dạng file <code>data/helpdesk.db</code>.
+  Trên Railway, file này được lưu vào <strong>Persistent Volume</strong> tại mount path <code>/app/data</code>
+  để đảm bảo dữ liệu không bị mất khi redeploy.
+</div>
+
+<h2>1.3 Tính Năng Chính</h2>
+
+<h3>Dành cho khách hàng (Public)</h3>
+<ul>
+  <li>Xem danh sách dịch vụ IT hỗ trợ (10 loại dịch vụ)</li>
+  <li>Tạo yêu cầu hỗ trợ (ticket) với thông tin liên hệ và mô tả sự cố</li>
+  <li>Nhận mã ticket tự động (định dạng TK + timestamp)</li>
+  <li>Tra cứu trạng thái ticket bằng mã ticket</li>
+</ul>
+
+<h3>Dành cho quản trị viên (Admin)</h3>
+<ul>
+  <li>Đăng nhập vào trang quản trị bảo mật</li>
+  <li>Xem toàn bộ danh sách ticket với thông tin chi tiết</li>
+  <li>Cập nhật trạng thái ticket: Open → In Progress → Closed</li>
+  <li>Xóa ticket đã xử lý</li>
+  <li>Lọc và tìm kiếm ticket</li>
+</ul>
+
+<!-- ===== SECTION 2 ===== -->
+<div class="page-break"></div>
+<h1>2. THÔNG TIN HẠ TẦNG</h1>
+
+<h2>2.1 Railway Cloud Platform</h2>
+
+<table>
+  <tr>
+    <th>Thông tin</th>
+    <th>Giá trị</th>
+  </tr>
+  <tr>
+    <td>Dashboard URL</td>
+    <td>https://railway.app/dashboard</td>
+  </tr>
+  <tr>
+    <td>Tên project</td>
+    <td><strong>[ĐIỀN TÊN PROJECT RAILWAY]</strong></td>
+  </tr>
+  <tr>
+    <td>Tên service</td>
+    <td>it-helpdesk</td>
+  </tr>
+  <tr>
+    <td>Region</td>
+    <td>Asia Pacific (Singapore)</td>
+  </tr>
+  <tr>
+    <td>Plan</td>
+    <td>Hobby ($5/tháng)</td>
+  </tr>
+  <tr>
+    <td>Volume mount path</td>
+    <td>/app/data</td>
+  </tr>
+  <tr>
+    <td>Port</td>
+    <td>3000 (Railway tự map ra public)</td>
+  </tr>
+  <tr>
+    <td>Start command</td>
+    <td><code>npm start</code></td>
+  </tr>
+  <tr>
+    <td>Build</td>
+    <td>Nixpacks (tự detect Node.js)</td>
+  </tr>
+  <tr>
+    <td>Auto-deploy</td>
+    <td>Có — mỗi khi push lên branch main</td>
+  </tr>
+</table>
+
+<h2>2.2 Cấu Trúc Thư Mục Project</h2>
+
+<div class="code-block">it-helpdesk/
+├── src/
+│   ├── app.js              # Server Express chính — entry point
+│   └── db/
+│       └── database.js     # Khởi tạo SQLite, tạo bảng, seed data
+├── public/
+│   ├── index.html          # Giao diện khách hàng
+│   ├── admin.html          # Giao diện quản trị
+│   ├── css/
+│   │   ├── style.css       # CSS trang chủ
+│   │   └── admin.css       # CSS trang admin
+│   └── js/
+│       ├── main.js         # JS trang chủ (tạo ticket, tra cứu)
+│       └── admin.js        # JS trang admin (quản lý ticket)
+├── data/
+│   └── helpdesk.db         # File database SQLite (nằm trong Railway Volume)
+├── nginx/
+│   └── dunetwork.conf      # Config Nginx (dành cho deploy VPS)
+├── Dockerfile              # Build Docker image (nếu cần)
+├── railway.json            # Cấu hình Railway deploy
+├── ecosystem.config.js     # Cấu hình PM2 (dành cho deploy VPS)
+├── .env.example            # Template biến môi trường
+├── .gitignore              # Loại trừ node_modules, .env, database
+└── package.json            # Dependencies và scripts</div>
+
+<h2>2.3 Biến Môi Trường (Environment Variables)</h2>
+
+<table>
+  <tr>
+    <th>Tên biến</th>
+    <th>Giá trị</th>
+    <th>Mô tả</th>
+  </tr>
+  <tr>
+    <td><code>NODE_ENV</code></td>
+    <td>production</td>
+    <td>Chế độ chạy</td>
+  </tr>
+  <tr>
+    <td><code>PORT</code></td>
+    <td>3000</td>
+    <td>Cổng server (Railway override tự động)</td>
+  </tr>
+</table>
+
+<p>Cấu hình tại: Railway Dashboard → Project → Service → Tab <strong>Variables</strong></p>
+
+<!-- ===== SECTION 3 ===== -->
+<div class="page-break"></div>
+<h1>3. TÀI KHOẢN &amp; THÔNG TIN ĐĂNG NHẬP</h1>
+
+<div class="important">
+  <strong>BẢO MẬT:</strong> Tài liệu này chứa thông tin nhạy cảm. Lưu trữ an toàn và không chia sẻ cho người không liên quan.
+  Đổi mật khẩu ngay sau khi bàn giao.
+</div>
+
+<table>
+  <tr>
+    <th>Hệ thống</th>
+    <th>Username / Email</th>
+    <th>Password</th>
+    <th>URL</th>
+    <th>Ghi chú</th>
+  </tr>
+  <tr>
+    <td><strong>Admin Helpdesk</strong></td>
+    <td>admin</td>
+    <td><strong>[ĐÃ ĐỔI — XEM MẬT KHẨU MỚI]</strong></td>
+    <td>[URL]/admin</td>
+    <td>Đổi mật khẩu sau deploy!</td>
+  </tr>
+  <tr>
+    <td><strong>Railway Account</strong></td>
+    <td>[EMAIL ĐĂNG KÝ]</td>
+    <td>[MẬT KHẨU RAILWAY]</td>
+    <td>railway.app</td>
+    <td>Quản lý server, logs</td>
+  </tr>
+  <tr>
+    <td><strong>GitHub Account</strong></td>
+    <td>[GITHUB USERNAME]</td>
+    <td>[MẬT KHẨU GITHUB]</td>
+    <td>github.com</td>
+    <td>Source code, auto-deploy</td>
+  </tr>
+  <tr>
+    <td><strong>Domain Registrar</strong></td>
+    <td>[EMAIL]</td>
+    <td>[MẬT KHẨU]</td>
+    <td>[NHÀ CUNG CẤP DOMAIN]</td>
+    <td>Quản lý DNS</td>
+  </tr>
+</table>
+
+<h3>Cách Đổi Mật Khẩu Admin Helpdesk</h3>
+<p>Sau khi deploy Railway thành công, chạy lệnh sau trong Railway Dashboard → Service → Tab <strong>Terminal</strong>:</p>
+
+<div class="code-block">node -e "
+const db = require('./src/db/database');
+db.run(\"UPDATE admin_users SET password = ? WHERE username = 'admin'\",
+  ['MAT_KHAU_MOI_MANH'],
+  () => { console.log('Done!'); process.exit(0); }
+);"</div>
+
+<!-- ===== SECTION 4 ===== -->
+<div class="page-break"></div>
+<h1>4. HƯỚNG DẪN SỬ DỤNG ADMIN</h1>
+
+<h2>4.1 Đăng Nhập Hệ Thống</h2>
+
+<ol>
+  <li>Truy cập: <strong>[URL_HE_THONG]/admin</strong></li>
+  <li>Nhập Username: <code>admin</code></li>
+  <li>Nhập Password: [mật khẩu đã đổi]</li>
+  <li>Click <strong>Đăng Nhập</strong></li>
+  <li>Hệ thống lưu token trong localStorage — không cần đăng nhập lại khi đóng tab</li>
+</ol>
+
+<div class="note">
+  <strong>Lưu ý bảo mật:</strong> Token đăng nhập được lưu trong trình duyệt (localStorage).
+  Khi cần đăng xuất, xóa cache trình duyệt hoặc mở tab ẩn danh.
+</div>
+
+<h2>4.2 Quản Lý Ticket</h2>
+
+<h3>Xem danh sách ticket</h3>
+<p>Sau khi đăng nhập, trang admin hiển thị toàn bộ ticket mới nhất lên đầu. Mỗi ticket hiển thị:</p>
+<ul>
+  <li>Mã ticket (TK + timestamp)</li>
+  <li>Tên khách hàng, email, số điện thoại</li>
+  <li>Dịch vụ yêu cầu</li>
+  <li>Tiêu đề và mô tả sự cố</li>
+  <li>Độ ưu tiên và trạng thái hiện tại</li>
+  <li>Thời gian tạo</li>
+</ul>
+
+<h3>Cập nhật trạng thái ticket</h3>
+<ol>
+  <li>Tìm ticket cần xử lý</li>
+  <li>Click dropdown trạng thái</li>
+  <li>Chọn trạng thái mới</li>
+  <li>Hệ thống tự động lưu và cập nhật thời gian</li>
+</ol>
+
+<h3>Luồng trạng thái ticket</h3>
+<table>
+  <tr>
+    <th>Trạng thái</th>
+    <th>Ý nghĩa</th>
+    <th>Hành động tiếp theo</th>
+  </tr>
+  <tr>
+    <td><span class="badge badge-blue">Open</span></td>
+    <td>Ticket mới chưa xử lý</td>
+    <td>Tiếp nhận → chuyển sang In Progress</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-orange">In Progress</span></td>
+    <td>Đang được xử lý</td>
+    <td>Sau khi xong → chuyển sang Closed</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">Closed</span></td>
+    <td>Đã giải quyết xong</td>
+    <td>Có thể xóa để dọn dẹp</td>
+  </tr>
+</table>
+
+<h2>4.3 Phân Loại Ưu Tiên</h2>
+
+<table>
+  <tr>
+    <th>Mức độ</th>
+    <th>Ý nghĩa</th>
+    <th>Thời gian phản hồi đề xuất</th>
+  </tr>
+  <tr>
+    <td><span class="badge badge-red">High</span></td>
+    <td>Sự cố nghiêm trọng, ảnh hưởng nhiều người</td>
+    <td>Trong vòng 1-2 giờ</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-orange">Medium</span></td>
+    <td>Sự cố ảnh hưởng một phần, có thể tiếp tục làm việc</td>
+    <td>Trong ngày làm việc</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">Low</span></td>
+    <td>Yêu cầu không gấp, cải tiến hoặc tư vấn</td>
+    <td>Trong vòng 2-3 ngày</td>
+  </tr>
+</table>
+
+<!-- ===== SECTION 5 ===== -->
+<div class="page-break"></div>
+<h1>5. API ENDPOINTS</h1>
+
+<p>Tài liệu kỹ thuật cho developers hoặc khi tích hợp hệ thống khác.</p>
+<p>Base URL: <strong>[URL_HE_THONG]</strong></p>
+
+<h2>5.1 Public APIs (Không cần xác thực)</h2>
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Mô tả</th>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">GET</span></td>
+    <td><code>/api/services</code></td>
+    <td>Lấy danh sách tất cả dịch vụ IT</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-blue">POST</span></td>
+    <td><code>/api/tickets</code></td>
+    <td>Tạo ticket mới</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">GET</span></td>
+    <td><code>/api/tickets/search/:code</code></td>
+    <td>Tra cứu ticket bằng mã (VD: TK1234567890)</td>
+  </tr>
+</table>
+
+<h3>Tạo ticket mới — Request body:</h3>
+<div class="code-block">{
+  "customer_name": "Nguyễn Văn A",       // Bắt buộc
+  "customer_email": "a@company.com",      // Bắt buộc
+  "customer_phone": "0901234567",         // Tùy chọn
+  "service_id": 1,                        // Bắt buộc — ID dịch vụ
+  "title": "Mạng bị chậm",               // Bắt buộc
+  "description": "Mô tả chi tiết...",     // Bắt buộc
+  "priority": "high"                      // Tùy chọn — low/medium/high
+}</div>
+
+<h2>5.2 Admin APIs (Cần header xác thực)</h2>
+
+<p>Header bắt buộc: <code>x-admin-token: [token nhận sau khi đăng nhập]</code></p>
+
+<table>
+  <tr>
+    <th>Method</th>
+    <th>Endpoint</th>
+    <th>Mô tả</th>
+  </tr>
+  <tr>
+    <td><span class="badge badge-blue">POST</span></td>
+    <td><code>/api/admin/login</code></td>
+    <td>Đăng nhập admin, nhận token</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-green">GET</span></td>
+    <td><code>/api/admin/tickets</code></td>
+    <td>Lấy toàn bộ tickets</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-orange">PUT</span></td>
+    <td><code>/api/admin/tickets/:id</code></td>
+    <td>Cập nhật trạng thái ticket</td>
+  </tr>
+  <tr>
+    <td><span class="badge badge-red">DELETE</span></td>
+    <td><code>/api/admin/tickets/:id</code></td>
+    <td>Xóa ticket</td>
+  </tr>
+</table>
+
+<!-- ===== SECTION 6 ===== -->
+<div class="page-break"></div>
+<h1>6. QUY TRÌNH VẬN HÀNH</h1>
+
+<h2>6.1 Kiểm Tra Hệ Thống Hằng Ngày</h2>
+
+<table>
+  <tr>
+    <th>Hạng mục</th>
+    <th>Cách kiểm tra</th>
+    <th>Tần suất</th>
+  </tr>
+  <tr>
+    <td>Website hoạt động</td>
+    <td>Truy cập URL chính thức, tạo thử 1 ticket</td>
+    <td>Mỗi ngày sáng</td>
+  </tr>
+  <tr>
+    <td>Admin panel</td>
+    <td>Đăng nhập /admin, kiểm tra ticket mới</td>
+    <td>Mỗi ngày</td>
+  </tr>
+  <tr>
+    <td>Railway logs</td>
+    <td>Railway Dashboard → Service → Logs</td>
+    <td>Khi có sự cố</td>
+  </tr>
+  <tr>
+    <td>Uptime monitoring</td>
+    <td>UptimeRobot (uptimerobot.com) — email alert khi down</td>
+    <td>Tự động 24/7</td>
+  </tr>
+  <tr>
+    <td>Dung lượng Volume</td>
+    <td>Railway Dashboard → Volume → Usage</td>
+    <td>Hàng tuần</td>
+  </tr>
+</table>
+
+<div class="success">
+  <strong>Gợi ý:</strong> Đăng ký UptimeRobot miễn phí tại <strong>uptimerobot.com</strong>.
+  Cấu hình monitor ping website mỗi 5 phút, nhận email khi down. Hoàn toàn miễn phí.
+</div>
+
+<h2>6.2 Backup Dữ Liệu</h2>
+
+<h3>Backup thủ công từ Railway</h3>
+<p>Railway Dashboard → Project → Service → Tab <strong>Terminal</strong>, chạy:</p>
+<div class="code-block"># Xem file database
+ls -la data/
+
+# Hiển thị toàn bộ dữ liệu tickets ra màn hình
+node -e "
+const db = require('./src/db/database');
+db.all('SELECT * FROM tickets', (err, rows) => {
+  console.log(JSON.stringify(rows, null, 2));
+  process.exit(0);
+});"</div>
+
+<p>Để download file database, dùng Railway CLI trên máy tính:</p>
+<div class="code-block"># Cài Railway CLI (1 lần)
+npm install -g @railway/cli
+
+# Đăng nhập
+railway login
+
+# Download database
+railway run -- cat data/helpdesk.db > backup_$(date +%Y%m%d).db</div>
+
+<h3>Lịch backup đề xuất</h3>
+<ul>
+  <li>Backup hàng tuần vào thứ 6 cuối ngày</li>
+  <li>Backup trước mỗi lần cập nhật code</li>
+  <li>Lưu backup tối thiểu 4 tuần gần nhất</li>
+</ul>
+
+<h2>6.3 Cập Nhật Code Mới</h2>
+
+<p>Railway tự động deploy khi push code lên GitHub. Quy trình:</p>
+
+<ol>
+  <li>Chỉnh sửa code trên máy tính tại <code>d:\claude-agent\it-helpdesk\</code></li>
+  <li>Mở PowerShell, chạy:<br>
+    <div class="code-block">cd d:\claude-agent\it-helpdesk
+git add .
+git commit -m "Mô tả thay đổi"
+git push origin main</div>
+  </li>
+  <li>Railway tự detect push mới và bắt đầu build lại (~2 phút)</li>
+  <li>Kiểm tra Railway Dashboard → Deployments để theo dõi tiến trình</li>
+  <li>Sau khi deploy xong, kiểm tra website hoạt động bình thường</li>
+</ol>
+
+<div class="important">
+  <strong>Lưu ý:</strong> Trong thời gian Railway deploy (~2 phút), website có thể bị gián đoạn ngắn.
+  Nên deploy vào giờ ít traffic (buổi tối hoặc sáng sớm).
+</div>
+
+<!-- ===== SECTION 7 ===== -->
+<div class="page-break"></div>
+<h1>7. XỬ LÝ SỰ CỐ</h1>
+
+<h2>Bảng Xử Lý Sự Cố Thường Gặp</h2>
+
+<table>
+  <tr>
+    <th>Triệu chứng</th>
+    <th>Nguyên nhân có thể</th>
+    <th>Cách xử lý</th>
+  </tr>
+  <tr>
+    <td>Website không vào được</td>
+    <td>Railway service bị dừng hoặc lỗi build</td>
+    <td>
+      1. Vào Railway Dashboard<br>
+      2. Kiểm tra service status<br>
+      3. Nếu Crashed → Click <strong>Redeploy</strong><br>
+      4. Xem Logs tìm lỗi cụ thể
+    </td>
+  </tr>
+  <tr>
+    <td>Mất dữ liệu ticket sau redeploy</td>
+    <td>Railway Volume chưa được mount</td>
+    <td>
+      1. Railway Dashboard → Service → Volumes<br>
+      2. Add Volume, mount path: <code>/app/data</code><br>
+      3. Redeploy lại service
+    </td>
+  </tr>
+  <tr>
+    <td>Domain không truy cập được</td>
+    <td>DNS chưa propagate hoặc sai record</td>
+    <td>
+      1. Kiểm tra DNS tại <strong>dnschecker.org</strong><br>
+      2. Đảm bảo CNAME record trỏ đúng về Railway domain<br>
+      3. Chờ 30 phút nếu vừa thay đổi DNS
+    </td>
+  </tr>
+  <tr>
+    <td>Đăng nhập admin không được</td>
+    <td>Sai mật khẩu hoặc token hết hạn</td>
+    <td>
+      1. Xóa localStorage: F12 → Application → Local Storage → Clear<br>
+      2. Thử đăng nhập lại<br>
+      3. Nếu quên mật khẩu → đổi mật khẩu qua Railway Terminal
+    </td>
+  </tr>
+  <tr>
+    <td>Tạo ticket lỗi</td>
+    <td>Thiếu trường bắt buộc hoặc lỗi database</td>
+    <td>
+      1. Kiểm tra Railway Logs (tab Logs)<br>
+      2. Đảm bảo Volume đang mount đúng<br>
+      3. Kiểm tra database có bị corrupt không
+    </td>
+  </tr>
+  <tr>
+    <td>Website chậm</td>
+    <td>Railway plan giới hạn resources</td>
+    <td>
+      1. Kiểm tra Railway Metrics (CPU, RAM)<br>
+      2. Nếu đầy → nâng lên Railway Pro plan<br>
+      3. Hoặc xem xét chuyển sang VPS
+    </td>
+  </tr>
+</table>
+
+<h2>Liên Hệ Hỗ Trợ</h2>
+
+<table>
+  <tr>
+    <th>Vấn đề</th>
+    <th>Liên hệ</th>
+  </tr>
+  <tr>
+    <td>Lỗi Railway platform</td>
+    <td>status.railway.app / help.railway.app</td>
+  </tr>
+  <tr>
+    <td>Lỗi domain/DNS</td>
+    <td>Support của nhà cung cấp domain</td>
+  </tr>
+  <tr>
+    <td>Lỗi code/tính năng</td>
+    <td>IT Team nội bộ Duy Network</td>
+  </tr>
+</table>
+
+<!-- ===== SECTION 8 ===== -->
+<div class="page-break"></div>
+<h1>8. CHI PHÍ &amp; GIA HẠN</h1>
+
+<table>
+  <tr>
+    <th>Dịch vụ</th>
+    <th>Nhà cung cấp</th>
+    <th>Chi phí</th>
+    <th>Chu kỳ</th>
+    <th>Ngày gia hạn</th>
+    <th>Thanh toán qua</th>
+  </tr>
+  <tr>
+    <td>Railway Hosting</td>
+    <td>Railway</td>
+    <td>$5 USD</td>
+    <td>Hàng tháng</td>
+    <td>[ĐIỀN NGÀY]</td>
+    <td>Thẻ Visa/Mastercard</td>
+  </tr>
+  <tr>
+    <td>Domain</td>
+    <td>[NHÀ CUNG CẤP]</td>
+    <td>[GIÁ]</td>
+    <td>Hàng năm</td>
+    <td>[ĐIỀN NGÀY]</td>
+    <td>[PHƯƠNG THỨC]</td>
+  </tr>
+  <tr>
+    <td><strong>Tổng</strong></td>
+    <td></td>
+    <td><strong>~$5/tháng</strong></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+<div class="note">
+  <strong>Lưu ý:</strong> Railway tính phí theo mức sử dụng thực tế. $5/tháng là gói Hobby plan.
+  Nếu có nhiều traffic hơn, chi phí có thể tăng. Kiểm tra usage tại Railway Dashboard → Usage.
+</div>
+
+<h2>Cảnh Báo Gia Hạn</h2>
+<ul>
+  <li>Railway: Thiết lập thẻ tín dụng auto-charge → không cần gia hạn thủ công</li>
+  <li>Domain: Đặt nhắc nhở trước ngày hết hạn <strong>30 ngày</strong> để gia hạn kịp</li>
+  <li>Nếu quên gia hạn domain, website sẽ không vào được</li>
+</ul>
+
+<!-- ===== SECTION 9 ===== -->
+<h1>9. LỊCH SỬ THAY ĐỔI</h1>
+
+<table>
+  <tr>
+    <th>Ngày</th>
+    <th>Phiên bản</th>
+    <th>Người thực hiện</th>
+    <th>Nội dung thay đổi</th>
+  </tr>
+  <tr>
+    <td>03/05/2026</td>
+    <td>1.0.0</td>
+    <td>IT Team - Duy Network</td>
+    <td>
+      Phiên bản đầu tiên. Deploy lên Railway.<br>
+      Tính năng: Tạo ticket, tra cứu, admin panel quản lý ticket.
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+<hr>
+
+<div class="footer-note">
+  <p><strong>Duy Network IT Helpdesk — Tài liệu bàn giao nội bộ</strong></p>
+  <p>Ngày tạo: 03/05/2026 | Phiên bản tài liệu: 1.0 | Cập nhật lần cuối: 03/05/2026</p>
+  <p>Mọi thắc mắc liên hệ IT Team nội bộ.</p>
+</div>
+
+</body>
+</html>
