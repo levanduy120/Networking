@@ -1,8 +1,5 @@
-// ============ LOAD SERVICES ============
 document.addEventListener('DOMContentLoaded', function() {
   loadServices();
-  
-  // Form submit
   document.getElementById('ticket-form').addEventListener('submit', createTicket);
 });
 
@@ -10,22 +7,23 @@ async function loadServices() {
   try {
     const response = await fetch('/api/services');
     const services = await response.json();
-    
+
     const servicesGrid = document.getElementById('services-grid');
     const serviceSelect = document.getElementById('service_id');
-    
+
+    servicesGrid.innerHTML = '';
+    serviceSelect.innerHTML = '<option value="">-- Chọn dịch vụ --</option>';
+
     services.forEach(service => {
-      // Add to grid
       const card = document.createElement('div');
       card.className = 'service-card';
       card.innerHTML = `
         <div class="icon">🖥️</div>
-        <h3>${service.name}</h3>
-        <p>${service.description}</p>
+        <h3>${escapeHtml(service.name)}</h3>
+        <p>${escapeHtml(service.description || '')}</p>
       `;
       servicesGrid.appendChild(card);
-      
-      // Add to select
+
       const option = document.createElement('option');
       option.value = service.id;
       option.textContent = service.name;
@@ -36,10 +34,9 @@ async function loadServices() {
   }
 }
 
-// ============ CREATE TICKET ============
 async function createTicket(e) {
   e.preventDefault();
-  
+
   const formData = {
     customer_name: document.getElementById('customer_name').value,
     customer_email: document.getElementById('customer_email').value,
@@ -53,29 +50,26 @@ async function createTicket(e) {
   try {
     const response = await fetch('/api/tickets', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)
     });
 
     const result = await response.json();
-
     const messageDiv = document.getElementById('form-message');
-    
+
     if (response.ok) {
       messageDiv.className = 'form-message success';
       messageDiv.innerHTML = `
-        ✅ <strong>Tạo ticket thành công!</strong><br>
-        Mã ticket của bạn: <strong>${result.ticket_code}</strong><br>
-        Vui lòng lưu mã này để theo dõi
+        <strong>Tạo ticket thành công!</strong><br>
+        Mã ticket của bạn: <strong>${escapeHtml(result.ticket_code)}</strong><br>
+        Vui lòng lưu mã này để theo dõi.
       `;
       document.getElementById('ticket-form').reset();
     } else {
       messageDiv.className = 'form-message error';
-      messageDiv.innerHTML = `❌ Lỗi: ${result.error}`;
+      messageDiv.textContent = 'Lỗi: ' + result.error;
     }
-    
+
     messageDiv.style.display = 'block';
     setTimeout(() => {
       messageDiv.style.display = 'none';
@@ -84,70 +78,68 @@ async function createTicket(e) {
     console.error('Error:', error);
     const messageDiv = document.getElementById('form-message');
     messageDiv.className = 'form-message error';
-    messageDiv.innerHTML = '❌ Lỗi kết nối. Vui lòng thử lại!';
+    messageDiv.textContent = 'Lỗi kết nối. Vui lòng thử lại!';
     messageDiv.style.display = 'block';
   }
 }
 
-// ============ SEARCH TICKET ============
 async function searchTicket() {
   const code = document.getElementById('search-code').value.trim();
-  
+
   if (!code) {
     alert('Vui lòng nhập mã ticket');
     return;
   }
 
   try {
-    const response = await fetch(`/api/tickets/search/${code}`);
+    const response = await fetch(`/api/tickets/search/${encodeURIComponent(code)}`);
     const result = await response.json();
-
     const resultDiv = document.getElementById('ticket-result');
 
     if (response.ok) {
       const statusClass = `status-${result.status}`;
       resultDiv.innerHTML = `
-        <h3>Thông Tin Ticket</h3>
+        <h3>Thông tin Ticket</h3>
         <div class="result-row">
           <strong>Mã Ticket:</strong>
-          <span>${result.ticket_code}</span>
+          <span>${escapeHtml(result.ticket_code)}</span>
         </div>
         <div class="result-row">
-          <strong>Tên Khách Hàng:</strong>
-          <span>${result.customer_name}</span>
+          <strong>Tên khách hàng:</strong>
+          <span>${escapeHtml(result.customer_name)}</span>
         </div>
         <div class="result-row">
           <strong>Email:</strong>
-          <span>${result.customer_email}</span>
+          <span>${escapeHtml(result.customer_email)}</span>
         </div>
         <div class="result-row">
-          <strong>Dịch Vụ:</strong>
-          <span>${result.service_name}</span>
+          <strong>Dịch vụ:</strong>
+          <span>${escapeHtml(result.service_name || '')}</span>
         </div>
         <div class="result-row">
-          <strong>Tiêu Đề:</strong>
-          <span>${result.title}</span>
+          <strong>Tiêu đề:</strong>
+          <span>${escapeHtml(result.title)}</span>
         </div>
         <div class="result-row">
-          <strong>Mô Tả:</strong>
-          <span>${result.description}</span>
+          <strong>Mô tả:</strong>
+          <span>${escapeHtml(result.description)}</span>
         </div>
         <div class="result-row">
-          <strong>Trạng Thái:</strong>
+          <strong>Trạng thái:</strong>
           <span class="${statusClass}">${formatStatus(result.status)}</span>
         </div>
         <div class="result-row">
-          <strong>Mức Độ:</strong>
+          <strong>Mức độ:</strong>
           <span>${formatPriority(result.priority)}</span>
         </div>
         <div class="result-row">
-          <strong>Ngày Tạo:</strong>
+          <strong>Ngày tạo:</strong>
           <span>${new Date(result.created_at).toLocaleString('vi-VN')}</span>
         </div>
       `;
       resultDiv.style.display = 'block';
     } else {
-      resultDiv.innerHTML = `<p style="color: red;">❌ ${result.error}</p>`;
+      resultDiv.innerHTML = `<p style="color: red;">${escapeHtml(result.error)}</p>`;
       resultDiv.style.display = 'block';
     }
   } catch (error) {
@@ -156,26 +148,34 @@ async function searchTicket() {
   }
 }
 
-// Helper functions
 function formatStatus(status) {
   const statuses = {
-    'open': 'Mở',
+    open: 'Mở',
     'in-progress': 'Đang xử lý',
-    'closed': 'Đóng'
+    closed: 'Đóng'
   };
   return statuses[status] || status;
 }
 
 function formatPriority(priority) {
   const priorities = {
-    'low': '🟢 Thấp',
-    'medium': '🟡 Bình thường',
-    'high': '🔴 Cao',
-    'urgent': '🔴 Cấp bách'
+    low: 'Thấp',
+    medium: 'Bình thường',
+    high: 'Cao',
+    urgent: 'Cấp bách'
   };
   return priorities[priority] || priority;
 }
 
 function scrollToSection(sectionId) {
   document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }

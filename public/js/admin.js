@@ -1,66 +1,71 @@
-// ============ GLOBAL VARIABLES ============
 let adminToken = null;
 let currentTicketId = null;
 let allTickets = [];
 
-// ============ INITIALIZATION ============
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('🔄 Admin panel initializing...');
+document.addEventListener('DOMContentLoaded', async function() {
+  document.getElementById('login-form').addEventListener('submit', adminLogin);
+  document.getElementById('filter-status').addEventListener('change', applyTicketFilters);
+  document.getElementById('search-ticket').addEventListener('input', applyTicketFilters);
+
   const savedToken = localStorage.getItem('adminToken');
-  console.log('📝 Saved token:', savedToken);
-  
-  if (savedToken) {
-    adminToken = savedToken;
-    console.log('✅ Token found, showing admin panel');
-    showAdminPanel();
-    loadDashboard();
-  } else {
-    console.log('❌ No token, showing login');
+  if (!savedToken) {
     showLoginPanel();
-    document.getElementById('login-form').addEventListener('submit', adminLogin);
+    return;
   }
+
+  adminToken = savedToken;
+  const validSession = await validateSession();
+  if (!validSession) {
+    forceLogout();
+    return;
+  }
+
+  showAdminPanel();
+  loadDashboard();
 });
 
-// ============ LOGIN ============
+async function validateSession() {
+  try {
+    const response = await fetch('/api/admin/me', {
+      headers: { 'x-admin-token': adminToken }
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Session check failed:', error);
+    return false;
+  }
+}
+
 async function adminLogin(e) {
   e.preventDefault();
-  
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
 
-  console.log('🔐 Logging in with:', username);
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
 
   try {
     const response = await fetch('/api/admin/login', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })
     });
 
     const result = await response.json();
-    console.log('📤 Login response:', result);
 
     if (response.ok) {
-      console.log('✅ Login thành công, token:', result.token);
       adminToken = result.token;
       localStorage.setItem('adminToken', adminToken);
-      localStorage.setItem('adminUsername', username);
-      console.log('✅ Token saved to localStorage');
       showAdminPanel();
       await loadDashboard();
-      await loadAllTickets();
-    } else {
-      alert('Lỗi: ' + result.error);
+      return;
     }
+
+    alert('Lỗi: ' + result.error);
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Login error:', error);
     alert('Lỗi kết nối!');
   }
 }
 
-// ============ UI FUNCTIONS ============
 function showLoginPanel() {
   document.getElementById('login-panel').style.display = 'flex';
   document.getElementById('admin-panel').style.display = 'none';
@@ -71,70 +76,67 @@ function showAdminPanel() {
   document.getElementById('admin-panel').style.display = 'flex';
 }
 
+function showSection(sectionId, navIndex) {
+  ['dashboard', 'tickets-section', 'services-section', 'change-password-section'].forEach(id => {
+    document.getElementById(id).style.display = id === sectionId ? 'block' : 'none';
+  });
+
+  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+}
+
 function loadDashboard() {
   showDashboard();
 }
 
 function showDashboard() {
-  document.getElementById('dashboard').style.display = 'block';
-  document.getElementById('tickets-section').style.display = 'none';
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  document.querySelectorAll('.nav-item')[0].classList.add('active');
-  
+  showSection('dashboard', 0);
   loadStats();
 }
 
 function showTickets() {
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('tickets-section').style.display = 'block';
-  document.getElementById('change-password-section').style.display = 'none';
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  document.querySelectorAll('.nav-item')[1].classList.add('active');
-
+  showSection('tickets-section', 1);
   loadAllTickets();
 }
 
+function showServices() {
+  showSection('services-section', 2);
+  loadServicesAdmin();
+}
+
 function showChangePassword() {
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('tickets-section').style.display = 'none';
-  document.getElementById('change-password-section').style.display = 'block';
-  document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  document.querySelectorAll('.nav-item')[2].classList.add('active');
+  showSection('change-password-section', 3);
   document.getElementById('password-message').textContent = '';
   document.getElementById('change-password-form').reset();
 }
 
-function logout() {
-  if (confirm('Bạn chắc chứn muốn đăng xuất?')) {
-    localStorage.removeItem('adminToken');
-    adminToken = null;
-    document.getElementById('ticket-modal').style.display = 'none';
-    location.reload();
+async function logout() {
+  if (!confirm('Bạn chắc chắn muốn đăng xuất?')) {
+    return;
   }
+
+  try {
+    await fetch('/api/admin/logout', {
+      method: 'POST',
+      headers: { 'x-admin-token': adminToken }
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+
+  forceLogout();
 }
 
-// ============ DASHBOARD ============
+function forceLogout() {
+  localStorage.removeItem('adminToken');
+  adminToken = null;
+  document.getElementById('ticket-modal').style.display = 'none';
+  showLoginPanel();
+}
+
 async function loadStats() {
-  console.log('📊 Loading stats...');
   try {
-    const response = await fetch('/api/admin/tickets', {
-      headers: {
-        'x-admin-token': adminToken
-      }
-    });
-
-    console.log('Response status:', response.status);
-
-    if (!response.ok) {
-      console.error('❌ Error response:', response.status);
-      alert('Không có quyền truy cập!');
-      logout();
-      return;
-    }
-
-    const tickets = await response.json();
-    console.log('✅ Tickets loaded:', tickets.length);
-
+    const tickets = await fetchAdminJson('/api/admin/tickets');
     const totalCount = tickets.length;
     const openCount = tickets.filter(t => t.status === 'open').length;
     const closedCount = tickets.filter(t => t.status === 'closed').length;
@@ -143,44 +145,43 @@ async function loadStats() {
     document.getElementById('open-tickets').textContent = openCount;
     document.getElementById('closed-tickets').textContent = closedCount;
   } catch (error) {
-    console.error('❌ Error loading stats:', error);
+    console.error('Error loading stats:', error);
   }
 }
 
-// ============ TICKETS MANAGEMENT ============
 async function loadAllTickets() {
-  console.log('🎫 Loading all tickets...');
   try {
-    const response = await fetch('/api/admin/tickets', {
-      headers: {
-        'x-admin-token': adminToken
-      }
-    });
-
-    console.log('Response status:', response.status);
-
-    if (!response.ok) {
-      console.error('❌ Error:', response.status);
-      alert('Không có quyền truy cập!');
-      logout();
-      return;
-    }
-
-    const tickets = await response.json();
-    console.log('✅ Tickets received:', tickets);
-    allTickets = tickets;
-    displayTickets(tickets);
+    allTickets = await fetchAdminJson('/api/admin/tickets');
+    applyTicketFilters();
   } catch (error) {
-    console.error('❌ Error loading tickets:', error);
+    console.error('Error loading tickets:', error);
     alert('Lỗi tải danh sách tickets!');
   }
+}
+
+function applyTicketFilters() {
+  const status = document.getElementById('filter-status').value;
+  const keyword = document.getElementById('search-ticket').value.trim().toLowerCase();
+
+  const filtered = allTickets.filter(ticket => {
+    const matchesStatus = !status || ticket.status === status;
+    const haystack = [
+      ticket.ticket_code,
+      ticket.customer_name,
+      ticket.customer_email,
+      ticket.service_name,
+      ticket.title
+    ].join(' ').toLowerCase();
+
+    return matchesStatus && (!keyword || haystack.includes(keyword));
+  });
+
+  displayTickets(filtered);
 }
 
 function displayTickets(tickets) {
   const tbody = document.getElementById('tickets-body');
   tbody.innerHTML = '';
-
-  console.log('📋 Displaying', tickets.length, 'tickets');
 
   if (tickets.length === 0) {
     tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px;">Không có ticket nào</td></tr>';
@@ -188,13 +189,12 @@ function displayTickets(tickets) {
   }
 
   tickets.forEach(ticket => {
-    console.log('Adding ticket:', ticket);
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td><strong>${ticket.ticket_code}</strong></td>
-      <td>${ticket.customer_name}</td>
-      <td>${ticket.service_name || 'N/A'}</td>
-      <td>${ticket.title}</td>
+      <td><strong>${escapeHtml(ticket.ticket_code)}</strong></td>
+      <td>${escapeHtml(ticket.customer_name)}</td>
+      <td>${escapeHtml(ticket.service_name || 'N/A')}</td>
+      <td>${escapeHtml(ticket.title)}</td>
       <td><span class="priority-${ticket.priority}">${formatPriority(ticket.priority)}</span></td>
       <td><span class="badge badge-${ticket.status}">${formatStatus(ticket.status)}</span></td>
       <td>${new Date(ticket.created_at).toLocaleDateString('vi-VN')}</td>
@@ -208,16 +208,16 @@ function displayTickets(tickets) {
 }
 
 function viewTicket(ticketId) {
-  console.log('👁️ Viewing ticket:', ticketId);
   currentTicketId = ticketId;
-
   const ticket = allTickets.find(t => t.id === ticketId);
-  if (ticket) {
-    displayTicketModal(ticket);
-    document.getElementById('ticket-modal').style.display = 'flex';
-  } else {
+
+  if (!ticket) {
     alert('Không tìm thấy ticket');
+    return;
   }
+
+  displayTicketModal(ticket);
+  document.getElementById('ticket-modal').style.display = 'flex';
 }
 
 function displayTicketModal(ticket) {
@@ -240,28 +240,21 @@ function closeModal() {
 
 async function updateTicketStatus() {
   const newStatus = document.getElementById('detail-status').value;
-  console.log('🔄 Updating ticket', currentTicketId, 'to status:', newStatus);
 
   try {
-    const response = await fetch(`/api/admin/tickets/${currentTicketId}`, {
+    await fetchAdminJson(`/api/admin/tickets/${currentTicketId}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-token': adminToken
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: newStatus })
     });
 
-    if (response.ok) {
-      alert('✅ Cập nhật thành công!');
-      closeModal();
-      await loadAllTickets();
-    } else {
-      alert('Lỗi cập nhật!');
-    }
+    alert('Cập nhật thành công!');
+    closeModal();
+    await loadAllTickets();
+    await loadStats();
   } catch (error) {
-    console.error('Error:', error);
-    alert('Lỗi kết nối!');
+    console.error('Update ticket error:', error);
+    alert('Lỗi cập nhật!');
   }
 }
 
@@ -270,72 +263,98 @@ async function deleteTicket() {
     return;
   }
 
-  console.log('🗑️ Deleting ticket:', currentTicketId);
-
   try {
-    const response = await fetch(`/api/admin/tickets/${currentTicketId}`, {
-      method: 'DELETE',
-      headers: {
-        'x-admin-token': adminToken
-      }
-    });
-
-    if (response.ok) {
-      alert('✅ Xóa thành công!');
-      closeModal();
-      await loadAllTickets();
-    } else {
-      alert('Lỗi xóa!');
-    }
+    await fetchAdminJson(`/api/admin/tickets/${currentTicketId}`, { method: 'DELETE' });
+    alert('Xóa thành công!');
+    closeModal();
+    await loadAllTickets();
+    await loadStats();
   } catch (error) {
-    console.error('Error:', error);
-    alert('Lỗi kết nối!');
+    console.error('Delete ticket error:', error);
+    alert('Lỗi xóa!');
   }
 }
 
-function deleteTicketConfirm(ticketId) {
+async function deleteTicketConfirm(ticketId) {
   if (!confirm('Bạn chắc chắn muốn xóa ticket này?')) {
     return;
   }
 
-  console.log('🗑️ Deleting ticket from list:', ticketId);
-
-  fetch(`/api/admin/tickets/${ticketId}`, {
-    method: 'DELETE',
-    headers: {
-      'x-admin-token': adminToken
-    }
-  }).then(response => {
-    if (response.ok) {
-      alert('✅ Xóa thành công!');
-      loadAllTickets();
-    } else {
-      alert('Lỗi xóa!');
-    }
-  });
+  try {
+    await fetchAdminJson(`/api/admin/tickets/${ticketId}`, { method: 'DELETE' });
+    alert('Xóa thành công!');
+    await loadAllTickets();
+    await loadStats();
+  } catch (error) {
+    console.error('Delete ticket error:', error);
+    alert('Lỗi xóa!');
+  }
 }
 
-// ============ HELPERS ============
-function formatStatus(status) {
-  const statuses = {
-    'open': 'Mở',
-    'in-progress': 'Đang xử lý',
-    'closed': 'Đóng'
-  };
-  return statuses[status] || status;
+async function loadServicesAdmin() {
+  const grid = document.getElementById('admin-services-grid');
+  const message = document.getElementById('services-message');
+  message.textContent = '';
+  grid.innerHTML = '<div class="loading">Đang tải dịch vụ...</div>';
+
+  try {
+    const services = await fetchAdminJson('/api/admin/services');
+    grid.innerHTML = '';
+
+    services.forEach(service => {
+      const card = document.createElement('form');
+      card.className = 'service-edit-card';
+      card.onsubmit = event => updateService(event, service.id);
+      card.innerHTML = `
+        <div class="service-card-preview">
+          <div class="service-icon">🖥️</div>
+          <strong>${escapeHtml(service.name)}</strong>
+          <span>${escapeHtml(service.description || '')}</span>
+        </div>
+        <div class="form-group">
+          <label for="service-name-${service.id}">Tên dịch vụ</label>
+          <input id="service-name-${service.id}" value="${escapeAttribute(service.name)}" required>
+        </div>
+        <div class="form-group">
+          <label for="service-description-${service.id}">Mô tả</label>
+          <textarea id="service-description-${service.id}" rows="3" required>${escapeHtml(service.description || '')}</textarea>
+        </div>
+        <button type="submit" class="btn-primary">Lưu dịch vụ</button>
+      `;
+      grid.appendChild(card);
+    });
+  } catch (error) {
+    console.error('Load services error:', error);
+    grid.innerHTML = '';
+    message.textContent = 'Không tải được danh sách dịch vụ.';
+    message.className = 'admin-message error';
+  }
 }
 
-function formatPriority(priority) {
-  const priorities = {
-    'low': '🟢 Thấp',
-    'medium': '🟡 Bình thường',
-    'high': '🔴 Cao',
-    'urgent': '🔴🔴 Cấp bách'
-  };
-  return priorities[priority] || priority;
+async function updateService(event, serviceId) {
+  event.preventDefault();
+
+  const name = document.getElementById(`service-name-${serviceId}`).value;
+  const description = document.getElementById(`service-description-${serviceId}`).value;
+  const message = document.getElementById('services-message');
+
+  try {
+    await fetchAdminJson(`/api/admin/services/${serviceId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, description, icon: 'desktop' })
+    });
+
+    message.textContent = 'Đã cập nhật dịch vụ.';
+    message.className = 'admin-message success';
+    await loadServicesAdmin();
+  } catch (error) {
+    console.error('Update service error:', error);
+    message.textContent = 'Lỗi cập nhật dịch vụ.';
+    message.className = 'admin-message error';
+  }
 }
 
-// ============ CHANGE PASSWORD ============
 async function changePassword(e) {
   e.preventDefault();
 
@@ -345,46 +364,87 @@ async function changePassword(e) {
   const messageDiv = document.getElementById('password-message');
 
   if (newPassword !== confirmPassword) {
-    messageDiv.innerHTML = '<span style="color: red;">❌ Mật khẩu xác nhận không trùng khớp!</span>';
+    messageDiv.innerHTML = '<span class="message-error">Mật khẩu xác nhận không trùng khớp.</span>';
     return;
   }
 
   if (newPassword.length < 6) {
-    messageDiv.innerHTML = '<span style="color: red;">❌ Mật khẩu phải có ít nhất 6 ký tự!</span>';
+    messageDiv.innerHTML = '<span class="message-error">Mật khẩu phải có ít nhất 6 ký tự.</span>';
     return;
   }
 
-  // Get username from localStorage (from login session)
-  const username = localStorage.getItem('adminUsername') || 'admin';
-
   try {
-    const response = await fetch('/api/admin/change-password', {
+    const result = await fetchAdminJson('/api/admin/change-password', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-admin-token': adminToken
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: username,
         old_password: currentPassword,
         new_password: newPassword
       })
     });
 
-    const result = await response.json();
+    messageDiv.innerHTML = `<span class="message-success">${escapeHtml(result.message)}</span>`;
+    document.getElementById('change-password-form').reset();
 
-    if (response.ok) {
-      messageDiv.innerHTML = '<span style="color: green;">✅ ' + result.message + '</span>';
-      document.getElementById('change-password-form').reset();
-      setTimeout(() => {
-        alert('Mật khẩu đã được đổi thành công! Vui lòng đăng nhập lại.');
-        logout();
-      }, 1500);
-    } else {
-      messageDiv.innerHTML = '<span style="color: red;">❌ Lỗi: ' + result.error + '</span>';
-    }
+    setTimeout(() => {
+      alert('Mật khẩu đã được đổi. Vui lòng đăng nhập lại.');
+      forceLogout();
+    }, 1200);
   } catch (error) {
-    console.error('Error:', error);
-    messageDiv.innerHTML = '<span style="color: red;">❌ Lỗi kết nối!</span>';
+    console.error('Change password error:', error);
+    messageDiv.innerHTML = `<span class="message-error">${escapeHtml(error.message || 'Lỗi kết nối!')}</span>`;
   }
+}
+
+async function fetchAdminJson(url, options = {}) {
+  const headers = {
+    ...(options.headers || {}),
+    'x-admin-token': adminToken
+  };
+
+  const response = await fetch(url, { ...options, headers });
+  const result = await response.json().catch(() => ({}));
+
+  if (response.status === 401) {
+    forceLogout();
+    throw new Error('Phiên đăng nhập hết hạn');
+  }
+
+  if (!response.ok) {
+    throw new Error(result.error || 'Request failed');
+  }
+
+  return result;
+}
+
+function formatStatus(status) {
+  const statuses = {
+    open: 'Mở',
+    'in-progress': 'Đang xử lý',
+    closed: 'Đóng'
+  };
+  return statuses[status] || status;
+}
+
+function formatPriority(priority) {
+  const priorities = {
+    low: 'Thấp',
+    medium: 'Bình thường',
+    high: 'Cao',
+    urgent: 'Cấp bách'
+  };
+  return priorities[priority] || priority;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replace(/`/g, '&#096;');
 }

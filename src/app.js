@@ -5,7 +5,6 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const db = require('./db/database');
 
-// Tạo thư mục data nếu chưa có
 const dataDir = path.join(__dirname, '../data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
@@ -13,22 +12,30 @@ if (!fs.existsSync(dataDir)) {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const adminSessions = new Map();
 
-// Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
-// ============ ROUTES ============
+function requireAdmin(req, res, next) {
+  const token = req.headers['x-admin-token'];
+  const session = token ? adminSessions.get(token) : null;
 
-// Trang chủ
+  if (!session) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  req.admin = session;
+  next();
+}
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-// API: Lấy danh sách dịch vụ
 app.get('/api/services', (req, res) => {
-  db.all("SELECT * FROM services", (err, rows) => {
+  db.all('SELECT * FROM services ORDER BY id ASC', (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
       return;
@@ -37,16 +44,13 @@ app.get('/api/services', (req, res) => {
   });
 });
 
-// API: Tạo ticket mới
 app.post('/api/tickets', (req, res) => {
   const { customer_name, customer_email, customer_phone, service_id, title, description, priority } = req.body;
-  
-  // Validate
+
   if (!customer_name || !customer_email || !service_id || !title || !description) {
     return res.status(400).json({ error: 'Vui lòng điền tất cả thông tin bắt buộc' });
   }
 
-  // Tạo mã ticket
   const ticket_code = 'TK' + Date.now();
 
   db.run(
@@ -63,12 +67,11 @@ app.post('/api/tickets', (req, res) => {
   );
 });
 
-// API: Lấy thông tin ticket (public, search bằng ticket code)
 app.get('/api/tickets/search/:code', (req, res) => {
   const { code } = req.params;
-  
+
   db.get(
-    `SELECT t.*, s.name as service_name FROM tickets t 
+    `SELECT t.*, s.name as service_name FROM tickets t
      LEFT JOIN services s ON t.service_id = s.id
      WHERE t.ticket_code = ?`,
     [code],
@@ -86,34 +89,41 @@ app.get('/api/tickets/search/:code', (req, res) => {
   );
 });
 
-// ============ ADMIN ROUTES ============
-
-// Admin login
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
-  
+
   db.get(
-    "SELECT * FROM admin_users WHERE username = ? AND password = ?",
+    'SELECT * FROM admin_users WHERE username = ? AND password = ?',
     [username, password],
     (err, row) => {
       if (err || !row) {
         return res.status(401).json({ error: 'Sai tên đăng nhập hoặc mật khẩu' });
       }
-      // Trong production, nên dùng JWT token
-      res.json({ success: true, token: uuidv4() });
+
+      const token = uuidv4();
+      adminSessions.set(token, {
+        id: row.id,
+        username: row.username,
+        createdAt: Date.now()
+      });
+
+      res.json({ success: true, token, username: row.username });
     }
   );
 });
 
-// Admin: Lấy tất cả ticket
-app.get('/api/admin/tickets', (req, res) => {
-  const token = req.headers['x-admin-token'];
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+app.post('/api/admin/logout', requireAdmin, (req, res) => {
+  adminSessions.delete(req.headers['x-admin-token']);
+  res.json({ success: true });
+});
 
+app.get('/api/admin/me', requireAdmin, (req, res) => {
+  res.json({ username: req.admin.username });
+});
+
+app.get('/api/admin/tickets', requireAdmin, (req, res) => {
   db.all(
-    `SELECT t.*, s.name as service_name FROM tickets t 
+    `SELECT t.*, s.name as service_name FROM tickets t
      LEFT JOIN services s ON t.service_id = s.id
      ORDER BY t.created_at DESC`,
     (err, rows) => {
@@ -126,18 +136,12 @@ app.get('/api/admin/tickets', (req, res) => {
   );
 });
 
-// Admin: Cập nhật trạng thái ticket
-app.put('/api/admin/tickets/:id', (req, res) => {
-  const token = req.headers['x-admin-token'];
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
+app.put('/api/admin/tickets/:id', requireAdmin, (req, res) => {
   const { status } = req.body;
   const { id } = req.params;
 
   db.run(
-    "UPDATE tickets SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+    'UPDATE tickets SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
     [status, id],
     function(err) {
       if (err) {
@@ -149,21 +153,46 @@ app.put('/api/admin/tickets/:id', (req, res) => {
   );
 });
 
-// Admin: Xóa ticket
-app.delete('/api/admin/tickets/:id', (req, res) => {
-  const token = req.headers['x-admin-token'];
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
+app.delete('/api/admin/tickets/:id', requireAdmin, (req, res) => {
   const { id } = req.params;
 
+  db.run('DELETE FROM tickets WHERE id = ?', [id], function(err) {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
+
+app.get('/api/admin/services', requireAdmin, (req, res) => {
+  db.all('SELECT * FROM services ORDER BY id ASC', (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+      return;
+    }
+    res.json(rows);
+  });
+});
+
+app.put('/api/admin/services/:id', requireAdmin, (req, res) => {
+  const { id } = req.params;
+  const { name, description, icon } = req.body;
+
+  if (!name || !description) {
+    return res.status(400).json({ error: 'Tên dịch vụ và mô tả là bắt buộc' });
+  }
+
   db.run(
-    "DELETE FROM tickets WHERE id = ?",
-    [id],
+    'UPDATE services SET name = ?, description = ?, icon = ? WHERE id = ?',
+    [name.trim(), description.trim(), icon || 'desktop', id],
     function(err) {
       if (err) {
         res.status(500).json({ error: err.message });
+        return;
+      }
+      if (this.changes === 0) {
+        res.status(404).json({ error: 'Không tìm thấy dịch vụ' });
         return;
       }
       res.json({ success: true });
@@ -171,61 +200,51 @@ app.delete('/api/admin/tickets/:id', (req, res) => {
   );
 });
 
-// Admin: Đổi mật khẩu
-app.post('/api/admin/change-password', (req, res) => {
-  const token = req.headers['x-admin-token'];
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+app.post('/api/admin/change-password', requireAdmin, (req, res) => {
+  const { old_password, new_password } = req.body;
+  const username = req.admin.username;
 
-  const { username, old_password, new_password } = req.body;
-
-  if (!username || !old_password || !new_password) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  if (!old_password || !new_password) {
+    return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
   }
 
   if (new_password.length < 6) {
-    return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    return res.status(400).json({ error: 'Mật khẩu phải có ít nhất 6 ký tự' });
   }
 
-  // Verify old password
   db.get(
-    "SELECT * FROM admin_users WHERE username = ? AND password = ?",
+    'SELECT * FROM admin_users WHERE username = ? AND password = ?',
     [username, old_password],
     (err, user) => {
       if (err || !user) {
-        return res.status(401).json({ error: 'Old password is incorrect' });
+        return res.status(401).json({ error: 'Mật khẩu hiện tại không đúng' });
       }
 
-      // Update to new password
       db.run(
-        "UPDATE admin_users SET password = ? WHERE username = ?",
+        'UPDATE admin_users SET password = ? WHERE username = ?',
         [new_password, username],
-        function(err) {
-          if (err) {
-            res.status(500).json({ error: err.message });
+        function(updateErr) {
+          if (updateErr) {
+            res.status(500).json({ error: updateErr.message });
             return;
           }
-          res.json({ success: true, message: 'Password changed successfully' });
+          adminSessions.delete(req.headers['x-admin-token']);
+          res.json({ success: true, message: 'Đổi mật khẩu thành công' });
         }
       );
     }
   );
 });
 
-// Admin: Lấy trang admin
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'));
 });
 
-// Catch all 404
 app.get('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server running at http://localhost:${PORT}`);
-  console.log(`📊 Admin panel: http://localhost:${PORT}/admin`);
-  console.log(`👤 Default admin: username=admin, password=admin123`);
+  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Admin panel: http://localhost:${PORT}/admin`);
 });

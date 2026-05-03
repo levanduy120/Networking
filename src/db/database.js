@@ -2,25 +2,21 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-// Tạo thư mục data nếu chưa có
 const dataDir = path.join(__dirname, '../../data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
-// Tạo kết nối đến database
 const dbPath = path.join(dataDir, 'helpdesk.db');
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
     console.error('Database connection error:', err);
   } else {
-    console.log('✅ Connected to SQLite database at:', dbPath);
+    console.log('Connected to SQLite database at:', dbPath);
   }
 });
 
-// Tạo các bảng
 db.serialize(() => {
-  // Bảng Dịch vụ
   db.run(`
     CREATE TABLE IF NOT EXISTS services (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -31,7 +27,6 @@ db.serialize(() => {
     )
   `);
 
-  // Bảng Ticket
   db.run(`
     CREATE TABLE IF NOT EXISTS tickets (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,7 +45,6 @@ db.serialize(() => {
     )
   `);
 
-  // Bảng Admin User
   db.run(`
     CREATE TABLE IF NOT EXISTS admin_users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,8 +54,7 @@ db.serialize(() => {
     )
   `);
 
-  // Thêm dữ liệu mẫu nếu bảng trống
-  db.get("SELECT COUNT(*) as count FROM services", (err, row) => {
+  db.get('SELECT COUNT(*) as count FROM services', (err, row) => {
     if (row && row.count === 0) {
       const services = [
         { name: 'Network Infrastructure Setup', description: 'Thiết kế, triển khai hạ tầng mạng enterprise' },
@@ -78,19 +71,16 @@ db.serialize(() => {
 
       services.forEach(service => {
         db.run(
-          "INSERT INTO services (name, description) VALUES (?, ?)",
+          'INSERT INTO services (name, description) VALUES (?, ?)',
           [service.name, service.description]
         );
       });
     }
   });
 
-  // Thêm admin user mặc định KHÔNG LÀM NAY - dùng setup-admins.js thay
-  // Khi production setup, tất cả user được thêm qua setup-admins.js
-  db.get("SELECT COUNT(*) as count FROM admin_users", (err, row) => {
+  db.get('SELECT COUNT(*) as count FROM admin_users', (err, row) => {
     if (row && row.count === 0) {
-      // KHÔNG insert default user - yêu cầu chạy setup-admins.js
-      console.log('⚠️  No admin users found. Please run: node setup-admins.js');
+      console.log('No admin users found. Please run: node setup-admins.js');
     }
   });
 });

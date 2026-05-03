@@ -9,37 +9,35 @@
 <body>
   <div id="login-panel" class="login-panel">
     <div class="login-container">
-      <h1>🌐 Duy Network Admin</h1>
+      <h1>Duy Network Admin</h1>
       <form id="login-form">
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" required>
+          <input type="text" id="username" name="username" autocomplete="username" required>
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
         </div>
-        <button type="submit" class="btn-primary">Đăng Nhập</button>
+        <button type="submit" class="btn-primary">Đăng nhập</button>
       </form>
-      <p class="hint">Sử dụng credentials được cấp bởi IT Team</p>
+      <p class="hint">Sử dụng tài khoản được cấp bởi IT Team</p>
     </div>
   </div>
 
   <div id="admin-panel" class="admin-panel" style="display: none;">
-    <!-- Sidebar -->
     <aside class="sidebar">
-      <div class="logo">🌐 Duy Network</div>
+      <div class="logo">Duy Network</div>
       <nav class="admin-nav">
-        <a href="#" onclick="showDashboard()" class="nav-item active">📊 Dashboard</a>
-        <a href="#" onclick="showTickets()" class="nav-item">🎫 Tickets</a>
-        <a href="#" onclick="showChangePassword()" class="nav-item">🔐 Đổi Mật Khẩu</a>
-        <a href="#" onclick="logout()" class="nav-item logout">🚪 Logout</a>
+        <a href="#" onclick="showDashboard()" class="nav-item active">Dashboard</a>
+        <a href="#" onclick="showTickets()" class="nav-item">Tickets</a>
+        <a href="#" onclick="showServices()" class="nav-item">Dịch vụ</a>
+        <a href="#" onclick="showChangePassword()" class="nav-item">Đổi mật khẩu</a>
+        <a href="#" onclick="logout()" class="nav-item logout">Logout</a>
       </nav>
     </aside>
 
-    <!-- Main Content -->
     <main class="main-content">
-      <!-- Dashboard -->
       <div id="dashboard" class="section">
         <h2>Dashboard</h2>
         <div class="stats">
@@ -49,18 +47,17 @@
           </div>
           <div class="stat-card">
             <div class="stat-number" id="open-tickets">0</div>
-            <div class="stat-label">Ticket Mở</div>
+            <div class="stat-label">Ticket mở</div>
           </div>
           <div class="stat-card">
             <div class="stat-number" id="closed-tickets">0</div>
-            <div class="stat-label">Ticket Đóng</div>
+            <div class="stat-label">Ticket đóng</div>
           </div>
         </div>
       </div>
 
-      <!-- Tickets Management -->
       <div id="tickets-section" class="section" style="display: none;">
-        <h2>Quản Lý Tickets</h2>
+        <h2>Quản lý Tickets</h2>
 
         <div class="filter-bar">
           <select id="filter-status">
@@ -69,45 +66,52 @@
             <option value="in-progress">Đang xử lý</option>
             <option value="closed">Đóng</option>
           </select>
-          <input type="text" id="search-ticket" placeholder="Tìm kiếm ticket..." />
+          <input type="text" id="search-ticket" placeholder="Tìm kiếm ticket...">
         </div>
 
         <table id="tickets-table" class="tickets-table">
           <thead>
             <tr>
               <th>Mã Ticket</th>
-              <th>Khách Hàng</th>
-              <th>Dịch Vụ</th>
-              <th>Tiêu Đề</th>
-              <th>Mức Độ</th>
-              <th>Trạng Thái</th>
-              <th>Ngày Tạo</th>
-              <th>Hành Động</th>
+              <th>Khách hàng</th>
+              <th>Dịch vụ</th>
+              <th>Tiêu đề</th>
+              <th>Mức độ</th>
+              <th>Trạng thái</th>
+              <th>Ngày tạo</th>
+              <th>Hành động</th>
             </tr>
           </thead>
-          <tbody id="tickets-body">
-          </tbody>
+          <tbody id="tickets-body"></tbody>
         </table>
       </div>
 
-      <!-- Change Password Section -->
+      <div id="services-section" class="section" style="display: none;">
+        <div class="section-header">
+          <h2>Quản lý dịch vụ trang chủ</h2>
+          <button class="btn-primary" onclick="loadServicesAdmin()">Tải lại</button>
+        </div>
+        <div id="services-message" class="admin-message"></div>
+        <div id="admin-services-grid" class="admin-services-grid"></div>
+      </div>
+
       <div id="change-password-section" class="section" style="display: none;">
-        <h2>Đổi Mật Khẩu</h2>
+        <h2>Đổi mật khẩu</h2>
         <div class="form-container">
           <form id="change-password-form" onsubmit="changePassword(event)">
             <div class="form-group">
-              <label for="current-password">Mật khẩu hiện tại:</label>
-              <input type="password" id="current-password" required>
+              <label for="current-password">Mật khẩu hiện tại</label>
+              <input type="password" id="current-password" autocomplete="current-password" required>
             </div>
             <div class="form-group">
-              <label for="new-password">Mật khẩu mới:</label>
-              <input type="password" id="new-password" required minlength="6">
+              <label for="new-password">Mật khẩu mới</label>
+              <input type="password" id="new-password" autocomplete="new-password" required minlength="6">
             </div>
             <div class="form-group">
-              <label for="confirm-password">Xác nhận mật khẩu mới:</label>
-              <input type="password" id="confirm-password" required minlength="6">
+              <label for="confirm-password">Xác nhận mật khẩu mới</label>
+              <input type="password" id="confirm-password" autocomplete="new-password" required minlength="6">
             </div>
-            <button type="submit" class="btn-primary">Đổi Mật Khẩu</button>
+            <button type="submit" class="btn-primary">Đổi mật khẩu</button>
           </form>
           <div id="password-message"></div>
         </div>
@@ -115,19 +119,18 @@
     </main>
   </div>
 
-  <!-- Ticket Detail Modal -->
   <div id="ticket-modal" class="modal" style="display: none;">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <h2>Chi Tiết Ticket</h2>
-      
+      <h2>Chi tiết Ticket</h2>
+
       <div class="ticket-detail">
         <div class="detail-row">
           <strong>Mã Ticket:</strong>
           <span id="detail-code"></span>
         </div>
         <div class="detail-row">
-          <strong>Khách Hàng:</strong>
+          <strong>Khách hàng:</strong>
           <span id="detail-customer"></span>
         </div>
         <div class="detail-row">
@@ -135,27 +138,27 @@
           <span id="detail-email"></span>
         </div>
         <div class="detail-row">
-          <strong>Số Điện Thoại:</strong>
+          <strong>Số điện thoại:</strong>
           <span id="detail-phone"></span>
         </div>
         <div class="detail-row">
-          <strong>Dịch Vụ:</strong>
+          <strong>Dịch vụ:</strong>
           <span id="detail-service"></span>
         </div>
         <div class="detail-row">
-          <strong>Tiêu Đề:</strong>
+          <strong>Tiêu đề:</strong>
           <span id="detail-title"></span>
         </div>
         <div class="detail-row">
-          <strong>Mô Tả:</strong>
+          <strong>Mô tả:</strong>
           <span id="detail-description"></span>
         </div>
         <div class="detail-row">
-          <strong>Mức Độ:</strong>
+          <strong>Mức độ:</strong>
           <span id="detail-priority"></span>
         </div>
         <div class="detail-row">
-          <strong>Trạng Thái:</strong>
+          <strong>Trạng thái:</strong>
           <select id="detail-status">
             <option value="open">Mở</option>
             <option value="in-progress">Đang xử lý</option>
@@ -163,13 +166,13 @@
           </select>
         </div>
         <div class="detail-row">
-          <strong>Ngày Tạo:</strong>
+          <strong>Ngày tạo:</strong>
           <span id="detail-created"></span>
         </div>
       </div>
 
       <div class="modal-actions">
-        <button class="btn-primary" onclick="updateTicketStatus()">Cập Nhật</button>
+        <button class="btn-primary" onclick="updateTicketStatus()">Cập nhật</button>
         <button class="btn-danger" onclick="deleteTicket()">Xóa</button>
         <button class="btn-secondary" onclick="closeModal()">Đóng</button>
       </div>
