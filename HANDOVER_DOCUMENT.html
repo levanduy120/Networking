@@ -265,11 +265,11 @@
     </tr>
     <tr>
       <td>URL hệ thống</td>
-      <td><strong>[ĐIỀN URL SAU KHI DEPLOY]</strong></td>
+      <td><strong>https://it-helpdesk-production.up.railway.app</strong></td>
     </tr>
     <tr>
       <td>Domain</td>
-      <td><strong>[ĐIỀN DOMAIN CỦA BẠN]</strong></td>
+      <td><strong>helpdesk.network.id.vn</strong></td>
     </tr>
     <tr>
       <td>Ngày bàn giao</td>
@@ -562,49 +562,91 @@
 <table>
   <tr>
     <th>Hệ thống</th>
-    <th>Username / Email</th>
+    <th>Username</th>
     <th>Password</th>
     <th>URL</th>
     <th>Ghi chú</th>
   </tr>
   <tr>
-    <td><strong>Admin Helpdesk</strong></td>
+    <td><strong>Admin Helpdesk (Primary)</strong></td>
     <td>admin</td>
-    <td><strong>[ĐÃ ĐỔI — XEM MẬT KHẨU MỚI]</strong></td>
-    <td>[URL]/admin</td>
-    <td>Đổi mật khẩu sau deploy!</td>
+    <td><code>DuyNetwork@Admin2024</code></td>
+    <td>https://it-helpdesk-production.up.railway.app/admin</td>
+    <td>Tài khoản admin chính</td>
+  </tr>
+  <tr>
+    <td><strong>Admin User 1</strong></td>
+    <td>admin1</td>
+    <td><code>HelpDesk@2024_Admin1</code></td>
+    <td>https://it-helpdesk-production.up.railway.app/admin</td>
+    <td>Nhân viên support</td>
+  </tr>
+  <tr>
+    <td><strong>Admin User 2</strong></td>
+    <td>admin2</td>
+    <td><code>HelpDesk@2024_Admin2</code></td>
+    <td>https://it-helpdesk-production.up.railway.app/admin</td>
+    <td>Nhân viên support</td>
+  </tr>
+  <tr>
+    <td><strong>Admin User 3</strong></td>
+    <td>admin3</td>
+    <td><code>HelpDesk@2024_Admin3</code></td>
+    <td>https://it-helpdesk-production.up.railway.app/admin</td>
+    <td>Nhân viên support</td>
+  </tr>
+  <tr>
+    <td><strong>Admin User 4</strong></td>
+    <td>admin4</td>
+    <td><code>HelpDesk@2024_Admin4</code></td>
+    <td>https://it-helpdesk-production.up.railway.app/admin</td>
+    <td>Nhân viên support</td>
+  </tr>
+  <tr>
+    <td><strong>Admin User 5</strong></td>
+    <td>admin5</td>
+    <td><code>HelpDesk@2024_Admin5</code></td>
+    <td>https://it-helpdesk-production.up.railway.app/admin</td>
+    <td>Nhân viên support</td>
   </tr>
   <tr>
     <td><strong>Railway Account</strong></td>
-    <td>[EMAIL ĐĂNG KÝ]</td>
-    <td>[MẬT KHẨU RAILWAY]</td>
-    <td>railway.app</td>
-    <td>Quản lý server, logs</td>
+    <td>levanduy120</td>
+    <td>Đã đăng nhập via GitHub</td>
+    <td>https://railway.app/dashboard</td>
+    <td>Quản lý server, logs, Volume</td>
   </tr>
   <tr>
-    <td><strong>GitHub Account</strong></td>
-    <td>[GITHUB USERNAME]</td>
-    <td>[MẬT KHẨU GITHUB]</td>
-    <td>github.com</td>
-    <td>Source code, auto-deploy</td>
+    <td><strong>GitHub Repository</strong></td>
+    <td>levanduy120</td>
+    <td>Xem GitHub settings</td>
+    <td>https://github.com/levanduy120/it-helpdesk</td>
+    <td>Source code, auto-deploy trigger</td>
   </tr>
   <tr>
-    <td><strong>Domain Registrar</strong></td>
-    <td>[EMAIL]</td>
-    <td>[MẬT KHẨU]</td>
-    <td>[NHÀ CUNG CẤP DOMAIN]</td>
-    <td>Quản lý DNS</td>
+    <td><strong>Domain</strong></td>
+    <td>network.id.vn</td>
+    <td>Quản lý tại nhà cung cấp</td>
+    <td>helpdesk.network.id.vn</td>
+    <td>Quản lý DNS records</td>
   </tr>
 </table>
 
-<h3>Cách Đổi Mật Khẩu Admin Helpdesk</h3>
-<p>Sau khi deploy Railway thành công, chạy lệnh sau trong Railway Dashboard → Service → Tab <strong>Terminal</strong>:</p>
+<h3>Mật Khẩu Admin Đã Được Setup</h3>
+<p>
+  ✅ Các admin users đã được tạo sẵn với mật khẩu mạnh. Nếu cần thay đổi mật khẩu trong tương lai,
+  chạy script sau trong Railway Terminal hoặc chạy local:
+</p>
 
-<div class="code-block">node -e "
+<div class="code-block">cd /app (hoặc d:\claude-agent\it-helpdesk local)
+node setup-admins.js
+
+# Hoặc chỉnh sửa SQL trực tiếp:
+node -e "
 const db = require('./src/db/database');
 db.run(\"UPDATE admin_users SET password = ? WHERE username = 'admin'\",
   ['MAT_KHAU_MOI_MANH'],
-  () => { console.log('Done!'); process.exit(0); }
+  () => { console.log('Updated!'); process.exit(0); }
 );"</div>
 
 <!-- ===== SECTION 4 ===== -->
@@ -614,9 +656,9 @@ db.run(\"UPDATE admin_users SET password = ? WHERE username = 'admin'\",
 <h2>4.1 Đăng Nhập Hệ Thống</h2>
 
 <ol>
-  <li>Truy cập: <strong>[URL_HE_THONG]/admin</strong></li>
-  <li>Nhập Username: <code>admin</code></li>
-  <li>Nhập Password: [mật khẩu đã đổi]</li>
+  <li>Truy cập: <strong>https://it-helpdesk-production.up.railway.app/admin</strong> (hoặc https://helpdesk.network.id.vn/admin khi gắn domain)</li>
+  <li>Nhập Username: <code>admin</code> (hoặc admin1-5)</li>
+  <li>Nhập Password: Xem bảng tài khoản ở trên</li>
   <li>Click <strong>Đăng Nhập</strong></li>
   <li>Hệ thống lưu token trong localStorage — không cần đăng nhập lại khi đóng tab</li>
 </ol>
@@ -1011,7 +1053,124 @@ git push origin main</div>
 </ul>
 
 <!-- ===== SECTION 9 ===== -->
-<h1>9. LỊCH SỬ THAY ĐỔI</h1>
+<h1>9. HƯỚ NG DẪN GẮN DOMAIN network.id.vn</h1>
+
+<p>
+  Hiện tại website chạy trên URL Railway mặc định: <code>https://it-helpdesk-production.up.railway.app</code>
+  <br>
+  Bạn có domain <code>network.id.vn</code> — hãy gắn nó vào Railway để có URL dễ nhớ: <code>https://helpdesk.network.id.vn</code>
+</p>
+
+<h2>9.1 Bước 1 — Cấu Hình Domain Trên Railway</h2>
+
+<ol>
+  <li>Vào <strong>Railway Dashboard</strong> → Project → Service <code>it-helpdesk</code></li>
+  <li>Tab <strong>Settings</strong> → Tìm mục <strong>Networking</strong></li>
+  <li>Click <strong>Add Custom Domain</strong></li>
+  <li>Nhập: <code>helpdesk.network.id.vn</code></li>
+  <li>Click <strong>Add</strong></li>
+  <li>Railway sẽ hiện <strong>DNS Record</strong> cần thêm</li>
+</ol>
+
+<h2>9.2 Bước 2 — Cấu Hình DNS Tại Nhà Cung Cấp Domain</h2>
+
+<p>Sau khi thêm domain trên Railway, bạn sẽ thấy 1 record CNAME:</p>
+
+<div class="code-block">Type: CNAME
+Name: helpdesk
+Value: cname.railway.app (hoặc similar)
+TTL: 3600</div>
+
+<p><strong>Vào nhà cung cấp domain network.id.vn:</strong></p>
+
+<ol>
+  <li>Đăng nhập DNS manager (cPanel, Plesk, hosting control panel...)</li>
+  <li>Tìm mục <strong>DNS Records</strong> hoặc <strong>Zone Editor</strong></li>
+  <li>Thêm record CNAME với thông tin Railway cấp:</li>
+</ol>
+
+<table>
+  <tr>
+    <th>Trường</th>
+    <th>Giá trị</th>
+    <th>Ví dụ</th>
+  </tr>
+  <tr>
+    <td><strong>Type</strong></td>
+    <td>CNAME</td>
+    <td>CNAME</td>
+  </tr>
+  <tr>
+    <td><strong>Name / Subdomain</strong></td>
+    <td>helpdesk</td>
+    <td>helpdesk (để trỏ helpdesk.network.id.vn)</td>
+  </tr>
+  <tr>
+    <td><strong>Points to / Target / Value</strong></td>
+    <td>[Giá trị từ Railway]</td>
+    <td>cname.railway.app (hoặc tên Railway cấp)</td>
+  </tr>
+  <tr>
+    <td><strong>TTL</strong></td>
+    <td>3600</td>
+    <td>3600 (1 giờ)</td>
+  </tr>
+</table>
+
+<h2>9.3 Bước 3 — Đợi DNS Propagate & Kiểm Tra</h2>
+
+<p>Sau khi thêm DNS record, DNS sẽ cần <strong>5-30 phút</strong> để propagate.</p>
+
+<ol>
+  <li>Truy cập <strong>https://dnschecker.org</strong></li>
+  <li>Nhập: <code>helpdesk.network.id.vn</code></li>
+  <li>Chờ tới khi tất cả region hiện IP/CNAME của Railway</li>
+  <li>Thử truy cập: <code>https://helpdesk.network.id.vn</code> → nếu thấy website = thành công!</li>
+</ol>
+
+<div class="success">
+  <strong>✅ Xong!</strong> Website sẽ tự động có SSL certificate miễn phí từ Railway.
+  Mọi người giờ có thể truy cập: <strong>https://helpdesk.network.id.vn</strong>
+</div>
+
+<h2>9.4 Troubleshoot Domain</h2>
+
+<table>
+  <tr>
+    <th>Vấn đề</th>
+    <th>Nguyên nhân</th>
+    <th>Giải pháp</th>
+  </tr>
+  <tr>
+    <td>Domain không vào được</td>
+    <td>DNS chưa propagate hoặc sai record</td>
+    <td>
+      1. Kiểm tra https://dnschecker.org<br>
+      2. Xác nhận CNAME record đúng ở DNS manager<br>
+      3. Chờ 30 phút nếu vừa thêm
+    </td>
+  </tr>
+  <tr>
+    <td>SSL certificate error</td>
+    <td>Railway chưa phát SSL cho domain mới</td>
+    <td>
+      1. Đợi 5 phút sau khi DNS trỏ đúng<br>
+      2. Railway tự động cấp SSL<br>
+      3. Reload browser nếu vẫn báo lỗi
+    </td>
+  </tr>
+  <tr>
+    <td>Domain trỏ nhưng trang không tải</td>
+    <td>Railway service bị dừng hoặc build fail</td>
+    <td>
+      1. Railway Dashboard → Kiểm tra service status<br>
+      2. Xem Logs để tìm lỗi<br>
+      3. Click Redeploy nếu cần
+    </td>
+  </tr>
+</table>
+
+<h1>10. LỊCH SỬ THAY ĐỔI</h1>
 
 <table>
   <tr>
@@ -1025,15 +1184,13 @@ git push origin main</div>
     <td>1.0.0</td>
     <td>IT Team - Duy Network</td>
     <td>
-      Phiên bản đầu tiên. Deploy lên Railway.<br>
-      Tính năng: Tạo ticket, tra cứu, admin panel quản lý ticket.
+      ✅ Deploy lên Railway thành công<br>
+      ✅ URL public: https://it-helpdesk-production.up.railway.app<br>
+      ✅ 6 admin users được tạo (admin, admin1-5)<br>
+      ✅ Railway Volume mounted tại /app/data (dữ liệu persistent)<br>
+      ✅ Database SQLite hoạt động, test ticket TK1777818314356<br>
+      ✅ Sẵn sàng gắn domain helpdesk.network.id.vn
     </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
   </tr>
   <tr>
     <td></td>
