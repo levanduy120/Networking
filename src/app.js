@@ -14,10 +14,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const adminSessions = new Map();
 
+// Tự động dọn session hết hạn sau 8 giờ
+setInterval(() => {
+  const now = Date.now();
+  for (const [token, session] of adminSessions.entries()) {
+    if (now - session.createdAt > 8 * 60 * 60 * 1000) {
+      adminSessions.delete(token);
+    }
+  }
+}, 60 * 60 * 1000);
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../public')));
 
+// ─── Middleware xác thực admin ───────────────────────────────────────────────
 function requireAdmin(req, res, next) {
   const token = req.headers['x-admin-token'];
   const session = token ? adminSessions.get(token) : null;
@@ -26,20 +37,24 @@ function requireAdmin(req, res, next) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  // Kiểm tra session hết hạn (8 giờ)
+  if (Date.now() - session.createdAt > 8 * 60 * 60 * 1000) {
+    adminSessions.delete(token);
+    return res.status(401).json({ error: 'Session hết hạn, vui lòng đăng nhập lại' });
+  }
+
   req.admin = session;
   next();
 }
 
+// ─── Public routes ────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.get('/api/services', (req, res) => {
   db.all('SELECT * FROM services ORDER BY id ASC', (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
+    if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
@@ -51,17 +66,20 @@ app.post('/api/tickets', (req, res) => {
     return res.status(400).json({ error: 'Vui lòng điền tất cả thông tin bắt buộc' });
   }
 
+  // Validate email cơ bản
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(customer_email)) {
+    return res.status(400).json({ error: 'Email không hợp lệ' });
+  }
+
   const ticket_code = 'TK' + Date.now();
 
   db.run(
     `INSERT INTO tickets (ticket_code, customer_name, customer_email, customer_phone, service_id, title, description, priority, status)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'open')`,
-    [ticket_code, customer_name, customer_email, customer_phone, service_id, title, description, priority || 'medium'],
+    [ticket_code, customer_name.trim(), customer_email.trim(), customer_phone, service_id, title.trim(), description.trim(), priority || 'medium'],
     function(err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
+      if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true, ticket_code, id: this.lastID });
     }
   );
@@ -76,21 +94,20 @@ app.get('/api/tickets/search/:code', (req, res) => {
      WHERE t.ticket_code = ?`,
     [code],
     (err, row) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      if (!row) {
-        res.status(404).json({ error: 'Không tìm thấy ticket' });
-        return;
-      }
+      if (err) return res.status(500).json({ error: err.message });
+      if (!row) return res.status(404).json({ error: 'Không tìm thấy ticket' });
       res.json(row);
     }
   );
 });
 
+// ─── Admin Auth routes ────────────────────────────────────────────────────────
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ error: 'Vui lòng nhập đầy đủ thông tin' });
+  }
 
   db.get(
     'SELECT * FROM admin_users WHERE username = ? AND password = ?',
@@ -121,16 +138,14 @@ app.get('/api/admin/me', requireAdmin, (req, res) => {
   res.json({ username: req.admin.username });
 });
 
+// ─── Admin Ticket routes ──────────────────────────────────────────────────────
 app.get('/api/admin/tickets', requireAdmin, (req, res) => {
   db.all(
     `SELECT t.*, s.name as service_name FROM tickets t
      LEFT JOIN services s ON t.service_id = s.id
      ORDER BY t.created_at DESC`,
     (err, rows) => {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
+      if (err) return res.status(500).json({ error: err.message });
       res.json(rows);
     }
   );
@@ -144,10 +159,7 @@ app.put('/api/admin/tickets/:id', requireAdmin, (req, res) => {
     'UPDATE tickets SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
     [status, id],
     function(err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
+      if (err) return res.status(500).json({ error: err.message });
       res.json({ success: true });
     }
   );
@@ -157,20 +169,15 @@ app.delete('/api/admin/tickets/:id', requireAdmin, (req, res) => {
   const { id } = req.params;
 
   db.run('DELETE FROM tickets WHERE id = ?', [id], function(err) {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
+    if (err) return res.status(500).json({ error: err.message });
     res.json({ success: true });
   });
 });
 
+// ─── Admin Service routes ─────────────────────────────────────────────────────
 app.get('/api/admin/services', requireAdmin, (req, res) => {
   db.all('SELECT * FROM services ORDER BY id ASC', (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
+    if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
 });
@@ -187,19 +194,14 @@ app.put('/api/admin/services/:id', requireAdmin, (req, res) => {
     'UPDATE services SET name = ?, description = ?, icon = ? WHERE id = ?',
     [name.trim(), description.trim(), icon || 'desktop', id],
     function(err) {
-      if (err) {
-        res.status(500).json({ error: err.message });
-        return;
-      }
-      if (this.changes === 0) {
-        res.status(404).json({ error: 'Không tìm thấy dịch vụ' });
-        return;
-      }
+      if (err) return res.status(500).json({ error: err.message });
+      if (this.changes === 0) return res.status(404).json({ error: 'Không tìm thấy dịch vụ' });
       res.json({ success: true });
     }
   );
 });
 
+// ─── Admin Change Password ────────────────────────────────────────────────────
 app.post('/api/admin/change-password', requireAdmin, (req, res) => {
   const { old_password, new_password } = req.body;
   const username = req.admin.username;
@@ -208,8 +210,8 @@ app.post('/api/admin/change-password', requireAdmin, (req, res) => {
     return res.status(400).json({ error: 'Thiếu thông tin bắt buộc' });
   }
 
-  if (new_password.length < 6) {
-    return res.status(400).json({ error: 'Mật khẩu phải có ít nhất 6 ký tự' });
+  if (new_password.length < 8) {
+    return res.status(400).json({ error: 'Mật khẩu phải có ít nhất 8 ký tự' });
   }
 
   db.get(
@@ -224,27 +226,26 @@ app.post('/api/admin/change-password', requireAdmin, (req, res) => {
         'UPDATE admin_users SET password = ? WHERE username = ?',
         [new_password, username],
         function(updateErr) {
-          if (updateErr) {
-            res.status(500).json({ error: updateErr.message });
-            return;
-          }
+          if (updateErr) return res.status(500).json({ error: updateErr.message });
           adminSessions.delete(req.headers['x-admin-token']);
-          res.json({ success: true, message: 'Đổi mật khẩu thành công' });
+          res.json({ success: true, message: 'Đổi mật khẩu thành công, vui lòng đăng nhập lại' });
         }
       );
     }
   );
 });
 
+// ─── Admin Panel (bảo vệ không trả HTML trực tiếp) ───────────────────────────
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/admin.html'));
 });
 
+// ─── 404 ──────────────────────────────────────────────────────────────────────
 app.get('*', (req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-  console.log(`Admin panel: http://localhost:${PORT}/admin`);
+  console.log(`✅ Duy Network Helpdesk running at http://localhost:${PORT}`);
+  console.log(`🔐 Admin panel: http://localhost:${PORT}/admin`);
 });
