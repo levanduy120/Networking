@@ -3,46 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Duy Network - Giải Pháp IT Chuyên Nghiệp</title>
+  <title>Duy Network Engineer - Network Support Portal</title>
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <!-- Navigation -->
   <nav class="navbar">
     <div class="container">
-      <div class="logo">🌐 Duy Network</div>
+      <div class="logo">Duy Network Engineer</div>
       <ul class="nav-links">
         <li><a href="#services">Dịch vụ</a></li>
-        <li><a href="#create-ticket">Tạo Ticket</a></li>
+        <li><a href="#create-ticket">Gửi yêu cầu</a></li>
         <li><a href="#track-ticket">Theo dõi</a></li>
-        <li><a href="/admin" class="btn-admin">Admin</a></li>
       </ul>
     </div>
   </nav>
 
-  <!-- Hero Section -->
   <section class="hero">
     <div class="container">
-      <h1>Duy Network - Giải Pháp IT Chuyên Nghiệp</h1>
-      <p>Hỗ trợ hạ tầng mạng, IT, Helpdesk 24/7 cho doanh nghiệp</p>
-      <button class="btn-primary" onclick="scrollToSection('create-ticket')">Tạo Ticket Ngay</button>
+      <h1>Duy Network Engineer</h1>
+      <p>Hỗ trợ hạ tầng mạng, firewall, WiFi, server và vận hành hệ thống cho doanh nghiệp</p>
+      <button class="btn-primary" onclick="scrollToSection('create-ticket')">Gửi Yêu Cầu Hỗ Trợ</button>
     </div>
   </section>
 
-  <!-- Services Section -->
   <section id="services" class="services">
     <div class="container">
-      <h2>Dịch Vụ Hỗ Trợ</h2>
-      <div id="services-grid" class="services-grid">
-        <!-- Services sẽ được load từ API -->
-      </div>
+      <h2>Dịch Vụ Network Engineering</h2>
+      <div id="services-grid" class="services-grid"></div>
     </div>
   </section>
 
-  <!-- Create Ticket Section -->
   <section id="create-ticket" class="create-ticket">
     <div class="container">
-      <h2>Tạo Yêu Cầu Hỗ Trợ</h2>
+      <h2>Gửi Yêu Cầu Hỗ Trợ</h2>
       <form id="ticket-form" class="form">
         <div class="form-group">
           <label for="customer_name">Tên của bạn *</label>
@@ -62,7 +55,7 @@
         <div class="form-group">
           <label for="service_id">Chọn dịch vụ *</label>
           <select id="service_id" name="service_id" required>
-            <option value="">-- Chọn dịch vụ --</option>
+            <option value="">-- Chọn dịch vụ network --</option>
           </select>
         </div>
 
@@ -92,32 +85,30 @@
     </div>
   </section>
 
-  <!-- Track Ticket Section -->
   <section id="track-ticket" class="track-ticket">
     <div class="container">
       <h2>Theo Dõi Ticket</h2>
       <div class="track-form">
-        <input type="text" id="search-code" placeholder="Nhập mã ticket (VD: TK1688...) " />
+        <input type="text" id="search-code" placeholder="Nhập mã ticket (VD: NW-1A2B3C4D)" />
         <button class="btn-primary" onclick="searchTicket()">Tìm Kiếm</button>
       </div>
       <div id="ticket-result" class="ticket-result" style="display: none;"></div>
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h3>Duy Network</h3>
-          <p>Giải pháp IT chuyên nghiệp cho doanh nghiệp</p>
+          <h3>Duy Network Engineer</h3>
+          <p>Giải pháp network engineering và vận hành hạ tầng cho doanh nghiệp</p>
         </div>
         <div class="footer-section">
           <h3>Liên Kết</h3>
           <ul>
             <li><a href="https://www.linkedin.com/in/duylenetworktechnical/" target="_blank">LinkedIn</a></li>
             <li><a href="#services">Dịch vụ</a></li>
-            <li><a href="#create-ticket">Tạo Ticket</a></li>
+            <li><a href="#create-ticket">Gửi yêu cầu</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -128,7 +119,7 @@
         </div>
       </div>
       <hr class="footer-divider">
-      <p class="footer-copyright">&copy; 2026 Duy Network. All rights reserved.</p>
+      <p class="footer-copyright">&copy; 2026 Duy Network Engineer. All rights reserved.</p>
     </div>
   </footer>
 

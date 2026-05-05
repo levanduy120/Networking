@@ -368,8 +368,8 @@ async function changePassword(e) {
     return;
   }
 
-  if (newPassword.length < 6) {
-    messageDiv.innerHTML = '<span class="message-error">Mật khẩu phải có ít nhất 6 ký tự.</span>';
+  if (newPassword.length < 8) {
+    messageDiv.innerHTML = '<span class="message-error">Mật khẩu phải có ít nhất 8 ký tự.</span>';
     return;
   }
 

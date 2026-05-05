@@ -10,8 +10,20 @@ if (!fs.existsSync(dataDir)) {
 const dbPath = path.join(dataDir, 'helpdesk.db');
 const db = new sqlite3.Database(dbPath);
 
+const defaultServices = [
+  ['Network Infrastructure Setup', 'Thiết kế, triển khai hạ tầng mạng enterprise', 'desktop'],
+  ['Network Maintenance & Support', 'Bảo trì, hỗ trợ mạng 24/7', 'desktop'],
+  ['Security & Firewall', 'Cấu hình firewall, VPN, bảo mật mạng', 'desktop'],
+  ['Wireless Solution', 'Giải pháp WiFi, mesh network, cấp phát IP', 'desktop'],
+  ['Office Endpoint Support', 'Hỗ trợ user, máy tính, máy in, phần mềm văn phòng', 'desktop'],
+  ['Network Consulting', 'Tư vấn kiến trúc mạng, nâng cấp hạ tầng và chuẩn hóa vận hành', 'desktop'],
+  ['Remote Support', 'Hỗ trợ từ xa qua RDP, TeamViewer', 'desktop'],
+  ['Network Monitoring', 'Giám sát mạng, cảnh báo và báo cáo hiệu suất', 'desktop'],
+  ['Cabling & Hardware', 'Lắp đặt dây cáp, switch, router, cấp phát PoE', 'desktop'],
+  ['System Administration', 'Quản lý server, backup, disaster recovery', 'desktop']
+];
+
 db.serialize(() => {
-  // Bảng services
   db.run(`CREATE TABLE IF NOT EXISTS services (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
@@ -20,7 +32,6 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Bảng tickets
   db.run(`CREATE TABLE IF NOT EXISTS tickets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     ticket_code TEXT UNIQUE NOT NULL,
@@ -37,7 +48,6 @@ db.serialize(() => {
     FOREIGN KEY (service_id) REFERENCES services(id)
   )`);
 
-  // Bảng admin_users
   db.run(`CREATE TABLE IF NOT EXISTS admin_users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
@@ -45,43 +55,40 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
-  // Seed services nếu chưa có
   db.get('SELECT COUNT(*) as count FROM services', (err, row) => {
     if (!err && row.count === 0) {
-      const services = [
-        ['Network Infrastructure Setup', 'Thiết kế, triển khai hạ tầng mạng enterprise', 'desktop'],
-        ['Network Maintenance & Support', 'Bảo trì, hỗ trợ mạng 24/7', 'desktop'],
-        ['Security & Firewall', 'Cấu hình firewall, VPN, bảo mật mạng', 'desktop'],
-        ['Wireless Solution', 'Giải pháp WiFi, mesh network, cấp phát IP', 'desktop'],
-        ['Office Helpdesk', 'Hỗ trợ user, máy tính, máy in, phần mềm', 'desktop'],
-        ['IT Consulting', 'Tư vấn giải pháp IT, lên kế hoạch nâng cấp cơ sở hạ tầng', 'desktop'],
-        ['Remote Support', 'Hỗ trợ từ xa qua RDP, TeamViewer', 'desktop'],
-        ['Network Monitoring', 'Giám sát mạng, báo cáo hiệu suất', 'desktop'],
-        ['Cabling & Hardware', 'Lắp đặt dây cáp, switch, router, cấp phát PoE', 'desktop'],
-        ['System Administration', 'Quản lý server, backup, disaster recovery', 'desktop'],
-      ];
       const stmt = db.prepare('INSERT INTO services (name, description, icon) VALUES (?, ?, ?)');
-      services.forEach(s => stmt.run(s));
+      defaultServices.forEach(service => stmt.run(service));
       stmt.finalize();
     }
   });
 
-  // Seed admin users — luôn đảm bảo tồn tại sau mỗi lần deploy
-  const admins = [
-    ['admin',  'DuyNetwork@2026'],
-    ['admin1', 'HelpDesk@2026_Admin1'],
-    ['admin2', 'HelpDesk@2026_Admin2'],
-    ['admin3', 'HelpDesk@2026_Admin3'],
-    ['admin4', 'HelpDesk@2026_Admin4'],
-    ['admin5', 'HelpDesk@2026_Admin5'],
-  ];
+  db.run(
+    `UPDATE services
+     SET name = ?, description = ?
+     WHERE name = ?`,
+    [
+      'Office Endpoint Support',
+      'Hỗ trợ user, máy tính, máy in, phần mềm văn phòng',
+      'Office Helpdesk'
+    ]
+  );
 
-  admins.forEach(([username, password]) => {
-    db.run(
-      `INSERT INTO admin_users (username, password) VALUES (?, ?)
-       ON CONFLICT(username) DO UPDATE SET password = excluded.password`,
-      [username, password]
-    );
+  db.run(
+    `UPDATE services
+     SET name = ?, description = ?
+     WHERE name = ?`,
+    [
+      'Network Consulting',
+      'Tư vấn kiến trúc mạng, nâng cấp hạ tầng và chuẩn hóa vận hành',
+      'IT Consulting'
+    ]
+  );
+
+  db.get('SELECT COUNT(*) as count FROM admin_users', (err, row) => {
+    if (!err && row.count === 0) {
+      console.log('No admin users found. Please run: node setup-admins.js');
+    }
   });
 });
 

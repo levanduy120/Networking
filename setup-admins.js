@@ -1,66 +1,50 @@
 #!/usr/bin/env node
+require('dotenv').config();
 const path = require('path');
-const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcryptjs');
 
 const dbPath = path.join(__dirname, 'data', 'helpdesk.db');
 const db = new sqlite3.Database(dbPath);
 
-// 5 admin users mới + mật khẩu mạnh
-const admins = [
-  { username: 'admin1', password: 'HelpDesk@2024_Admin1' },
-  { username: 'admin2', password: 'HelpDesk@2024_Admin2' },
-  { username: 'admin3', password: 'HelpDesk@2024_Admin3' },
-  { username: 'admin4', password: 'HelpDesk@2024_Admin4' },
-  { username: 'admin5', password: 'HelpDesk@2024_Admin5' },
-];
+const username = process.env.ADMIN_USERNAME || 'admin';
+const password = process.env.ADMIN_PASSWORD;
 
-// Đổi password admin mặc định
-const newAdminPassword = 'DuyNetwork@Admin2024';
+if (!password || password.length < 8) {
+  console.error('ADMIN_PASSWORD is required and must be at least 8 characters.');
+  console.error('Example: ADMIN_USERNAME=admin ADMIN_PASSWORD=your_strong_password node setup-admins.js');
+  process.exit(1);
+}
 
-console.log('🔧 Bắt đầu setup admin users...\n');
+const passwordHash = bcrypt.hashSync(password, 12);
+
+console.log('Setting up admin user...');
 
 db.serialize(() => {
-  // 1. Đổi password admin mặc định
   db.run(
-    "UPDATE admin_users SET password = ? WHERE username = 'admin'",
-    [newAdminPassword],
-    function(err) {
-      if (err) {
-        console.error('❌ Lỗi đổi password admin:', err.message);
-      } else {
-        console.log('✅ Đổi password admin mặc định:');
-        console.log(`   Username: admin`);
-        console.log(`   Password: ${newAdminPassword}\n`);
-      }
-    }
+    `CREATE TABLE IF NOT EXISTS admin_users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL UNIQUE,
+      password TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`
   );
 
-  // 2. Thêm 5 admin users mới
-  admins.forEach((user, idx) => {
-    db.run(
-      "INSERT INTO admin_users (username, password) VALUES (?, ?)",
-      [user.username, user.password],
-      function(err) {
-        if (err) {
-          console.error(`❌ Lỗi thêm ${user.username}:`, err.message);
-        } else {
-          console.log(`✅ Thêm user ${idx + 1}/5:`);
-          console.log(`   Username: ${user.username}`);
-          console.log(`   Password: ${user.password}\n`);
-        }
+  db.run(
+    `INSERT INTO admin_users (username, password)
+     VALUES (?, ?)
+     ON CONFLICT(username) DO UPDATE SET password = excluded.password`,
+    [username, passwordHash],
+    function(err) {
+      if (err) {
+        console.error('Failed to create/update admin:', err.message);
+        db.close();
+        process.exit(1);
       }
-    );
-  });
 
-  // 3. Verify
-  setTimeout(() => {
-    db.all("SELECT username FROM admin_users", [], (err, rows) => {
-      console.log('\n📋 Toàn bộ admin users hiện có:');
-      rows?.forEach(row => console.log(`   - ${row.username}`));
-      console.log('\n✅ Setup hoàn tất!');
+      console.log(`Admin user is ready: ${username}`);
+      console.log('Password was stored as a bcrypt hash.');
       db.close();
-      process.exit(0);
-    });
-  }, 1000);
+    }
+  );
 });

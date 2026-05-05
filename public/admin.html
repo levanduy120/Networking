@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Duy Network - Admin Panel</title>
+  <title>Duy Network Engineer - Secure Console</title>
   <link rel="stylesheet" href="/css/admin.css">
 </head>
 <body>
   <div id="login-panel" class="login-panel">
     <div class="login-container">
-      <h1>Duy Network Admin</h1>
+      <h1>Secure Console</h1>
       <form id="login-form">
         <div class="form-group">
           <label for="username">Username</label>
@@ -21,13 +21,13 @@
         </div>
         <button type="submit" class="btn-primary">Đăng nhập</button>
       </form>
-      <p class="hint">Sử dụng tài khoản được cấp bởi IT Team</p>
+      <p class="hint">Chỉ dành cho tài khoản quản trị được cấp quyền</p>
     </div>
   </div>
 
   <div id="admin-panel" class="admin-panel" style="display: none;">
     <aside class="sidebar">
-      <div class="logo">Duy Network</div>
+      <div class="logo">Duy Network Engineer</div>
       <nav class="admin-nav">
         <a href="#" onclick="showDashboard()" class="nav-item active">Dashboard</a>
         <a href="#" onclick="showTickets()" class="nav-item">Tickets</a>
@@ -105,11 +105,11 @@
             </div>
             <div class="form-group">
               <label for="new-password">Mật khẩu mới</label>
-              <input type="password" id="new-password" autocomplete="new-password" required minlength="6">
+              <input type="password" id="new-password" autocomplete="new-password" required minlength="8">
             </div>
             <div class="form-group">
               <label for="confirm-password">Xác nhận mật khẩu mới</label>
-              <input type="password" id="confirm-password" autocomplete="new-password" required minlength="6">
+              <input type="password" id="confirm-password" autocomplete="new-password" required minlength="8">
             </div>
             <button type="submit" class="btn-primary">Đổi mật khẩu</button>
           </form>

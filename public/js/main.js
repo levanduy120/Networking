@@ -12,7 +12,7 @@ async function loadServices() {
     const serviceSelect = document.getElementById('service_id');
 
     servicesGrid.innerHTML = '';
-    serviceSelect.innerHTML = '<option value="">-- Chọn dịch vụ --</option>';
+    serviceSelect.innerHTML = '<option value="">-- Chọn dịch vụ network --</option>';
 
     services.forEach(service => {
       const card = document.createElement('div');
@@ -60,9 +60,9 @@ async function createTicket(e) {
     if (response.ok) {
       messageDiv.className = 'form-message success';
       messageDiv.innerHTML = `
-        <strong>Tạo ticket thành công!</strong><br>
+        <strong>Đã nhận yêu cầu hỗ trợ!</strong><br>
         Mã ticket của bạn: <strong>${escapeHtml(result.ticket_code)}</strong><br>
-        Vui lòng lưu mã này để theo dõi.
+        Vui lòng lưu mã này để theo dõi. Hệ thống sẽ gửi email xác nhận nếu email được cấu hình đúng.
       `;
       document.getElementById('ticket-form').reset();
     } else {

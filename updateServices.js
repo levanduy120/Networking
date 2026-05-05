@@ -5,15 +5,15 @@ const newServices = [
   { name: 'Network Maintenance & Support', description: 'Bảo trì, hỗ trợ mạng 24/7' },
   { name: 'Security & Firewall', description: 'Cấu hình firewall, VPN, bảo mật mạng' },
   { name: 'Wireless Solution', description: 'Giải pháp WiFi, mesh network, cấp phát IP' },
-  { name: 'Office Helpdesk', description: 'Hỗ trợ user, máy tính, máy in, phần mềm' },
-  { name: 'IT Consulting', description: 'Tư vấn giải pháp IT, lên kế hoạch nâng cấp cơ sở hạ tầng' },
+  { name: 'Office Endpoint Support', description: 'Hỗ trợ user, máy tính, máy in, phần mềm văn phòng' },
+  { name: 'Network Consulting', description: 'Tư vấn kiến trúc mạng, nâng cấp hạ tầng và chuẩn hóa vận hành' },
   { name: 'Remote Support', description: 'Hỗ trợ từ xa qua RDP, TeamViewer' },
-  { name: 'Network Monitoring', description: 'Giám sát mạng, báo cáo hiệu suất' },
+  { name: 'Network Monitoring', description: 'Giám sát mạng, cảnh báo và báo cáo hiệu suất' },
   { name: 'Cabling & Hardware', description: 'Lắp đặt dây cáp, switch, router, cấp phát PoE' },
   { name: 'System Administration', description: 'Quản lý server, backup, disaster recovery' }
 ];
 
-console.log('Đang cập nhật dịch vụ...');
+console.log('Đang cập nhật dịch vụ network...');
 
 db.serialize(() => {
   db.run('DELETE FROM services');

@@ -1,150 +1,92 @@
-# IT Helpdesk Support System
+# Duy Network Engineer Support Portal
 
-Một hệ thống quản lý yêu cầu hỗ trợ IT đơn giản, dễ sử dụng và dễ quản lý.
+Portal nhận yêu cầu hỗ trợ network engineering cho khách hàng/doanh nghiệp.
 
-## ✨ Tính Năng
+## Tính năng
 
-- 🌐 **Trang chủ đẹp** - Giới thiệu dịch vụ hỗ trợ IT
-- 🎫 **Tạo Ticket** - Khách hàng có thể tạo yêu cầu hỗ trợ
-- 🔍 **Theo dõi Ticket** - Kiểm tra trạng thái yêu cầu bằng mã ticket
-- 👨‍💼 **Admin Panel** - Quản lý tất cả tickets, cập nhật trạng thái
-- 📊 **Dashboard** - Xem thống kê tổng quan
+- Trang public giới thiệu dịch vụ network engineering.
+- Khách hàng gửi yêu cầu hỗ trợ và nhận mã ticket.
+- Khách hàng tra cứu trạng thái bằng mã ticket.
+- Email xác nhận gửi cho khách hàng sau khi tạo ticket.
+- Email thông báo ticket mới gửi cho kỹ sư phụ trách.
+- Secure Console tại `/admin` để quản lý ticket, trạng thái và dịch vụ.
+- Mật khẩu admin được lưu bằng bcrypt, không lưu plain text.
+- Rate limit cho đăng nhập admin và tạo ticket.
 
-## 🛠️ Công Nghệ
+## Công nghệ
 
-- **Backend**: Node.js + Express
-- **Database**: SQLite
-- **Frontend**: HTML + CSS + Vanilla JavaScript
-- **Hosting**: Có thể deploy trên Heroku, Railway, VPS
+- Backend: Node.js + Express
+- Database: SQLite
+- Frontend: HTML + CSS + Vanilla JavaScript
+- Email: Nodemailer SMTP
+- Deploy: Railway
 
-## 📦 Cài Đặt
+## Cài đặt local
 
-### 1. Cài Node.js
-Tải từ: https://nodejs.org/
-
-### 2. Clone/Download Project
-```bash
-cd it-helpdesk
-```
-
-### 3. Cài Dependencies
 ```bash
 npm install
+cp .env.example .env
+npm start
 ```
 
-### 4. Chạy Server
+Website chạy tại `http://localhost:3000`.
+
+Admin console chạy tại `http://localhost:3000/admin`. Đường admin đã được ẩn khỏi trang chủ để tránh lộ link quản trị.
+
+## Tạo hoặc đổi admin
+
+Thêm biến môi trường vào `.env`:
+
+```env
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_strong_password_here
+```
+
+Sau đó chạy:
+
+```bash
+node setup-admins.js
+```
+
+Script sẽ tạo/cập nhật admin và lưu mật khẩu bằng bcrypt.
+
+## Cấu hình email SMTP
+
+Thêm các biến sau trong `.env` local hoặc Railway Variables:
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=levanduy120@gmail.com
+SMTP_PASS=your_app_password
+MAIL_FROM="Duy Network Engineer <levanduy120@gmail.com>"
+OWNER_EMAIL=levanduy120@gmail.com
+```
+
+Với Gmail, dùng App Password thay cho mật khẩu Gmail thường.
+
+Khi SMTP chưa được cấu hình, hệ thống vẫn tạo ticket bình thường và chỉ bỏ qua bước gửi email.
+
+## Deploy Railway
+
+Railway tự chạy:
+
 ```bash
 npm start
 ```
 
-Server sẽ chạy tại: `http://localhost:3000`
+Sau khi push lên GitHub, Railway sẽ build lại. Nhớ cấu hình các Railway Variables tương tự `.env.example`, đặc biệt là SMTP và admin password.
 
-## 🚀 Sử Dụng
+## Ghi chú bảo mật
 
-### Trang Chủ (http://localhost:3000)
-- Xem danh sách dịch vụ hỗ trợ
-- Tạo ticket mới
-- Theo dõi ticket bằng mã ticket code
+- Không commit file `.env`.
+- Không đưa mật khẩu admin vào README, tài liệu bàn giao, hoặc source code.
+- Nên đổi toàn bộ mật khẩu admin cũ vì credentials trước đây từng nằm trong repo.
+- Nên backup `data/helpdesk.db` định kỳ nếu dùng SQLite trên Railway Volume.
 
-### Admin Panel (http://localhost:3000/admin)
-**Đăng nhập:**
-- Username: `admin`
-- Password: `admin123`
+## Tài liệu chi tiết
 
-**Chức năng:**
-- 📊 Dashboard: Xem tổng quan tickets
-- 🎫 Tickets: Quản lý tất cả tickets
-  - Xem chi tiết ticket
-  - Cập nhật trạng thái (Mở → Đang xử lý → Đóng)
-  - Xóa ticket
+Xem hướng dẫn đầy đủ từ lúc tạo website đến deploy, cấu hình email, Railway, VPS và lỗi thường gặp tại:
 
-## 📁 Cấu Trúc Project
-
-```
-it-helpdesk/
-├── src/
-│   ├── app.js              # Server chính
-│   ├── db/
-│   │   └── database.js     # Setup database
-│   └── routes/
-├── public/
-│   ├── index.html          # Trang chủ
-│   ├── admin.html          # Admin panel
-│   ├── css/
-│   │   ├── style.css       # CSS trang chủ
-│   │   └── admin.css       # CSS admin
-│   └── js/
-│       ├── main.js         # JavaScript trang chủ
-│       └── admin.js        # JavaScript admin
-├── data/
-│   └── helpdesk.db         # SQLite database
-├── package.json
-└── README.md
-```
-
-## 🔐 Bảo Mật
-
-⚠️ **Lưu ý:** Đây là version demo. Trước khi deploy lên production:
-
-1. **Thay đổi password admin**:
-   - Mở file `src/db/database.js`
-   - Tìm dòng: `db.run("INSERT INTO admin_users (username, password) VALUES (?, ?)", ['admin', 'admin123']`
-   - Thay `admin123` bằng password mạnh
-
-2. **Hash Password**: 
-   - Cài bcryptjs: `npm install bcryptjs`
-   - Sử dụng bcrypt để hash password (xem phần Security Enhancement)
-
-3. **Sử dụng HTTPS**
-
-4. **Thêm xác thực JWT**
-
-## 📝 Các Dịch Vụ Mặc Định
-
-- Network Support - Hỗ trợ mạng, WiFi, VPN
-- Hardware Support - Sửa chữa máy tính, máy in
-- Software Support - Hỗ trợ phần mềm, license
-- Email Support - Cấu hình email, Outlook
-- User Training - Đào tạo sử dụng phần mềm
-
-## 🚀 Deploy Lên Production
-
-### Option 1: Heroku
-```bash
-# Cài Heroku CLI
-# Login
-heroku login
-
-# Tạo app
-heroku create your-app-name
-
-# Deploy
-git push heroku main
-```
-
-### Option 2: Railway (Recommend)
-1. Đăng ký tại railway.app
-2. Connect GitHub repo
-3. Deploy
-
-### Option 3: VPS (DigitalOcean, Linode)
-1. SSH vào server
-2. Cài Node.js
-3. Clone project
-4. `npm install && npm start`
-5. Dùng PM2 để keep server chạy: `npm install -g pm2 && pm2 start src/app.js`
-
-## 📞 Support
-
-Nếu gặp lỗi, kiểm tra:
-- Node.js version (>= 14.0)
-- Port 3000 có bị chiếm không
-- SQLite có được install không
-
-## 📄 License
-
-MIT
-
----
-
-✍️ Tạo bởi Claude Copilot
+[HUONG_DAN_CAI_DAT_TU_DAU_DEN_CUOI.md](HUONG_DAN_CAI_DAT_TU_DAU_DEN_CUOI.md)
