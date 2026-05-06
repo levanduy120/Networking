@@ -1,25 +1,27 @@
 let adminToken = null;
 let currentTicketId = null;
 let allTickets = [];
+let sessionWarningTimer = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
   document.getElementById('login-form').addEventListener('submit', adminLogin);
   document.getElementById('filter-status').addEventListener('change', applyTicketFilters);
   document.getElementById('search-ticket').addEventListener('input', applyTicketFilters);
 
-  const savedToken = localStorage.getItem('adminToken');
+  const savedToken = sessionStorage.getItem('adminToken');
   if (!savedToken) {
     showLoginPanel();
     return;
   }
 
   adminToken = savedToken;
-  const validSession = await validateSession();
-  if (!validSession) {
+  const sessionInfo = await validateSession();
+  if (!sessionInfo) {
     forceLogout();
     return;
   }
 
+  scheduleSessionWarning(sessionInfo.sessionRemainingMs, sessionInfo.sessionTtlMs);
   showAdminPanel();
   loadDashboard();
 });
@@ -29,11 +31,39 @@ async function validateSession() {
     const response = await fetch('/api/admin/me', {
       headers: { 'x-admin-token': adminToken }
     });
-    return response.ok;
+    if (!response.ok) return null;
+    return await response.json();
   } catch (error) {
     console.error('Session check failed:', error);
-    return false;
+    return null;
   }
+}
+
+function scheduleSessionWarning(remainingMs, ttlMs) {
+  clearTimeout(sessionWarningTimer);
+  const WARNING_BEFORE_MS = 5 * 60 * 1000;
+  const warnIn = remainingMs - WARNING_BEFORE_MS;
+  if (warnIn <= 0) {
+    showToast('Phiên làm việc sắp hết hạn. Vui lòng lưu công việc!', 'warning');
+    return;
+  }
+  sessionWarningTimer = setTimeout(() => {
+    showToast('Phiên làm việc còn khoảng 5 phút. Nhấn bất kỳ thao tác nào để gia hạn.', 'warning');
+  }, warnIn);
+}
+
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, type === 'warning' ? 6000 : 3500);
 }
 
 async function adminLogin(e) {
@@ -53,16 +83,18 @@ async function adminLogin(e) {
 
     if (response.ok) {
       adminToken = result.token;
-      localStorage.setItem('adminToken', adminToken);
+      sessionStorage.setItem('adminToken', adminToken);
       showAdminPanel();
       await loadDashboard();
+      const sessionInfo = await validateSession();
+      if (sessionInfo) scheduleSessionWarning(sessionInfo.sessionRemainingMs, sessionInfo.sessionTtlMs);
       return;
     }
 
-    alert('Lỗi: ' + result.error);
+    showToast('Lỗi: ' + result.error, 'error');
   } catch (error) {
     console.error('Login error:', error);
-    alert('Lỗi kết nối!');
+    showToast('Lỗi kết nối!', 'error');
   }
 }
 
@@ -128,7 +160,8 @@ async function logout() {
 }
 
 function forceLogout() {
-  localStorage.removeItem('adminToken');
+  sessionStorage.removeItem('adminToken');
+  clearTimeout(sessionWarningTimer);
   adminToken = null;
   document.getElementById('ticket-modal').style.display = 'none';
   showLoginPanel();
@@ -137,13 +170,10 @@ function forceLogout() {
 async function loadStats() {
   try {
     const tickets = await fetchAdminJson('/api/admin/tickets');
-    const totalCount = tickets.length;
-    const openCount = tickets.filter(t => t.status === 'open').length;
-    const closedCount = tickets.filter(t => t.status === 'closed').length;
-
-    document.getElementById('total-tickets').textContent = totalCount;
-    document.getElementById('open-tickets').textContent = openCount;
-    document.getElementById('closed-tickets').textContent = closedCount;
+    document.getElementById('total-tickets').textContent = tickets.length;
+    document.getElementById('open-tickets').textContent = tickets.filter(t => t.status === 'open').length;
+    document.getElementById('inprogress-tickets').textContent = tickets.filter(t => t.status === 'in-progress').length;
+    document.getElementById('closed-tickets').textContent = tickets.filter(t => t.status === 'closed').length;
   } catch (error) {
     console.error('Error loading stats:', error);
   }
@@ -155,7 +185,7 @@ async function loadAllTickets() {
     applyTicketFilters();
   } catch (error) {
     console.error('Error loading tickets:', error);
-    alert('Lỗi tải danh sách tickets!');
+    showToast('Lỗi tải danh sách tickets!', 'error');
   }
 }
 
@@ -248,13 +278,13 @@ async function updateTicketStatus() {
       body: JSON.stringify({ status: newStatus })
     });
 
-    alert('Cập nhật thành công!');
+    showToast('Cập nhật trạng thái thành công!');
     closeModal();
     await loadAllTickets();
     await loadStats();
   } catch (error) {
     console.error('Update ticket error:', error);
-    alert('Lỗi cập nhật!');
+    showToast('Lỗi cập nhật!', 'error');
   }
 }
 
@@ -265,13 +295,13 @@ async function deleteTicket() {
 
   try {
     await fetchAdminJson(`/api/admin/tickets/${currentTicketId}`, { method: 'DELETE' });
-    alert('Xóa thành công!');
+    showToast('Đã xóa ticket thành công!');
     closeModal();
     await loadAllTickets();
     await loadStats();
   } catch (error) {
     console.error('Delete ticket error:', error);
-    alert('Lỗi xóa!');
+    showToast('Lỗi xóa ticket!', 'error');
   }
 }
 
@@ -282,12 +312,12 @@ async function deleteTicketConfirm(ticketId) {
 
   try {
     await fetchAdminJson(`/api/admin/tickets/${ticketId}`, { method: 'DELETE' });
-    alert('Xóa thành công!');
+    showToast('Đã xóa ticket thành công!');
     await loadAllTickets();
     await loadStats();
   } catch (error) {
     console.error('Delete ticket error:', error);
-    alert('Lỗi xóa!');
+    showToast('Lỗi xóa ticket!', 'error');
   }
 }
 
@@ -345,13 +375,11 @@ async function updateService(event, serviceId) {
       body: JSON.stringify({ name, description, icon: 'desktop' })
     });
 
-    message.textContent = 'Đã cập nhật dịch vụ.';
-    message.className = 'admin-message success';
+    showToast('Đã cập nhật dịch vụ thành công!');
     await loadServicesAdmin();
   } catch (error) {
     console.error('Update service error:', error);
-    message.textContent = 'Lỗi cập nhật dịch vụ.';
-    message.className = 'admin-message error';
+    showToast('Lỗi cập nhật dịch vụ: ' + (error.message || ''), 'error');
   }
 }
 
@@ -412,6 +440,10 @@ async function fetchAdminJson(url, options = {}) {
 
   if (!response.ok) {
     throw new Error(result.error || 'Request failed');
+  }
+
+  if (result.sessionTtlMs && result.sessionRemainingMs) {
+    scheduleSessionWarning(result.sessionRemainingMs, result.sessionTtlMs);
   }
 
   return result;

@@ -3,123 +3,265 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Duy Network Engineer - Network Support Portal</title>
+  <title>Duy Network Academy - Học Network Thực Chiến</title>
+  <meta name="description" content="Học cấu hình mạng thực chiến: switch, router, firewall, WiFi, EVE-NG labs và mentor 1:1 cho IT support và network engineer junior tại Việt Nam.">
+  <meta property="og:title" content="Duy Network Academy - Học Network Thực Chiến">
+  <meta property="og:description" content="Tài liệu, video và khóa học thực chiến cho người mới, IT support và network engineer junior muốn tự tin cấu hình mạng doanh nghiệp.">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index, follow">
   <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <span>8:00 - 22:00 | Học network thực chiến</span>
+      <a href="mailto:levanduy120@gmail.com">levanduy120@gmail.com</a>
+    </div>
+  </header>
+
   <nav class="navbar">
-    <div class="container">
-      <div class="logo">Duy Network Engineer</div>
-      <ul class="nav-links">
-        <li><a href="#services">Dịch vụ</a></li>
-        <li><a href="#create-ticket">Gửi yêu cầu</a></li>
-        <li><a href="#track-ticket">Theo dõi</a></li>
+    <div class="container nav-inner">
+      <a class="logo" href="/">Duy Network Academy</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Mở menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/#paths">Lộ trình</a></li>
+        <li><a href="/#labs">EVE Labs</a></li>
+        <li><a href="/#courses">Khóa học</a></li>
+        <li><a href="/#mentor">Mentor</a></li>
+        <li><a href="/#enterprise">IT Support</a></li>
+        <li><a href="/#resources">Tài liệu</a></li>
+        <li><a href="/register.html">Đăng ký học</a></li>
       </ul>
     </div>
   </nav>
 
-  <section class="hero">
-    <div class="container">
-      <h1>Duy Network Engineer</h1>
-      <p>Hỗ trợ hạ tầng mạng, firewall, WiFi, server và vận hành hệ thống cho doanh nghiệp</p>
-      <button class="btn-primary" onclick="scrollToSection('create-ticket')">Gửi Yêu Cầu Hỗ Trợ</button>
-    </div>
-  </section>
-
-  <section id="services" class="services">
-    <div class="container">
-      <h2>Dịch Vụ Network Engineering</h2>
-      <div id="services-grid" class="services-grid"></div>
-    </div>
-  </section>
-
-  <section id="create-ticket" class="create-ticket">
-    <div class="container">
-      <h2>Gửi Yêu Cầu Hỗ Trợ</h2>
-      <form id="ticket-form" class="form">
-        <div class="form-group">
-          <label for="customer_name">Tên của bạn *</label>
-          <input type="text" id="customer_name" name="customer_name" required>
+  <main>
+    <section id="home" class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Network Engineering Learning Hub</span>
+          <h1>Học cấu hình mạng theo cách người đi làm thật sự cần</h1>
+          <p>Tài liệu, video và khóa học thực chiến cho người mới bắt đầu, IT support và network engineer junior muốn tự tin cấu hình switch, router, firewall, WiFi và troubleshooting.</p>
+          <div class="trust-row">
+            <span>Lab theo mô hình doanh nghiệp</span>
+            <span>Checklist sau mỗi bài</span>
+            <span>Hỗ trợ ticket riêng</span>
+          </div>
+          <div class="hero-actions">
+            <a class="btn-primary link-button" href="/register.html">Đăng ký tư vấn học</a>
+            <a class="btn-secondary link-button" href="#paths">Xem lộ trình</a>
+          </div>
+          <div class="hero-metrics">
+            <div><strong>6+</strong><span>Lộ trình học</span></div>
+            <div><strong>40+</strong><span>Checklist thực hành</span></div>
+            <div><strong>1:1</strong><span>Mentor thực chiến</span></div>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="customer_email">Email *</label>
-          <input type="email" id="customer_email" name="customer_email" required>
+        <div class="hero-media">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80" alt="Network lab server rack">
         </div>
-
-        <div class="form-group">
-          <label for="customer_phone">Số điện thoại</label>
-          <input type="tel" id="customer_phone" name="customer_phone">
-        </div>
-
-        <div class="form-group">
-          <label for="service_id">Chọn dịch vụ *</label>
-          <select id="service_id" name="service_id" required>
-            <option value="">-- Chọn dịch vụ network --</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="title">Tiêu đề vấn đề *</label>
-          <input type="text" id="title" name="title" required>
-        </div>
-
-        <div class="form-group">
-          <label for="description">Mô tả chi tiết *</label>
-          <textarea id="description" name="description" rows="5" required></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="priority">Mức độ ưu tiên</label>
-          <select id="priority" name="priority">
-            <option value="low">Thấp</option>
-            <option value="medium" selected>Bình thường</option>
-            <option value="high">Cao</option>
-            <option value="urgent">Cấp bách</option>
-          </select>
-        </div>
-
-        <button type="submit" class="btn-primary">Gửi Yêu Cầu</button>
-      </form>
-      <div id="form-message" class="form-message" style="display: none;"></div>
-    </div>
-  </section>
-
-  <section id="track-ticket" class="track-ticket">
-    <div class="container">
-      <h2>Theo Dõi Ticket</h2>
-      <div class="track-form">
-        <input type="text" id="search-code" placeholder="Nhập mã ticket (VD: NW-1A2B3C4D)" />
-        <button class="btn-primary" onclick="searchTicket()">Tìm Kiếm</button>
       </div>
-      <div id="ticket-result" class="ticket-result" style="display: none;"></div>
-    </div>
-  </section>
+    </section>
+
+    <section class="pain-points">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Bạn có đang gặp vấn đề này?</span>
+          <h2>Học network dễ bị rối nếu chỉ xem lý thuyết rời rạc</h2>
+        </div>
+        <div class="problem-grid">
+          <div class="problem-item">Không biết bắt đầu từ TCP/IP, subnet hay switch trước</div>
+          <div class="problem-item">Xem video nhiều nhưng vào lab lại không cấu hình được</div>
+          <div class="problem-item">Thiếu checklist troubleshooting khi mạng lỗi thật</div>
+          <div class="problem-item">Chưa hiểu VLAN, trunk, routing, NAT, VPN theo luồng end-to-end</div>
+          <div class="problem-item">Muốn học firewall/WiFi nhưng không có lab rõ ràng</div>
+          <div class="problem-item">Cần mentor review cấu hình và chỉ lỗi sai</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="paths" class="learning-paths">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Lộ trình học</span>
+          <h2>Click vào từng lộ trình để mở trang nội dung riêng</h2>
+          <p>Mỗi trang có khái niệm, checklist học, lab cần làm và kết quả đạt được.</p>
+        </div>
+        <div id="path-grid" class="path-grid"></div>
+      </div>
+    </section>
+
+    <section id="labs" class="lab-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">EVE-NG Lab Library</span>
+          <h2>Lab thực hành theo vendor: Fortinet, Palo Alto, Cisco, MikroTik, Ruijie</h2>
+          <p>Mỗi lab có topology, thiết bị cần chuẩn bị, mục tiêu cấu hình, checklist kiểm tra và bài tập mở rộng. Đây là phần giúp website có chất network engineer thực chiến hơn.</p>
+        </div>
+        <div id="lab-grid" class="lab-grid"></div>
+      </div>
+    </section>
+
+    <section id="mentor" class="mentor-section">
+      <div class="container mentor-grid">
+        <div class="mentor-photo">
+          <img src="https://images.unsplash.com/photo-1600267204091-5c1ab8b10c02?auto=format&fit=crop&w=900&q=80" alt="Network engineer working">
+        </div>
+        <div>
+          <span class="eyebrow">Người hướng dẫn</span>
+          <h2>Học cùng người làm network thực tế, không chỉ học lệnh cấu hình</h2>
+          <p>Mục tiêu của website này là biến kiến thức network thành quy trình có thể làm được: đọc sơ đồ, hiểu traffic, cấu hình có checklist, kiểm tra log và viết tài liệu bàn giao.</p>
+          <div class="cred-grid">
+            <div><strong>Thực chiến</strong><span>Lab theo tình huống văn phòng, chi nhánh, firewall edge, WiFi guest.</span></div>
+            <div><strong>Có kiểm tra</strong><span>Mỗi module có checklist đầu ra và bài lab để học viên tự đánh giá.</span></div>
+            <div><strong>Có hỗ trợ</strong><span>Học viên có thể gửi ticket khi bị kẹt lab hoặc cần review cấu hình.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="courses" class="courses">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Khóa học đề xuất</span>
+          <h2>Khóa học cơ bản nhưng bám sát môi trường doanh nghiệp</h2>
+          <p>Không hiển thị giá ở trang chủ. Click vào từng khóa để xem nội dung học và checklist đầu ra.</p>
+        </div>
+        <div id="course-grid" class="course-grid"></div>
+      </div>
+    </section>
+
+    <section class="outcomes-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Học xong cần làm được gì?</span>
+          <h2>Không học lan man, mỗi phần đều có đầu ra rõ</h2>
+        </div>
+        <div class="problem-grid">
+          <div class="problem-item">Tự vẽ và đọc sơ đồ mạng văn phòng nhỏ</div>
+          <div class="problem-item">Cấu hình VLAN, trunk, gateway và kiểm tra lỗi DHCP</div>
+          <div class="problem-item">Hiểu NAT, firewall policy và đường đi traffic ra Internet</div>
+          <div class="problem-item">Biết đọc log, đặt giả thuyết và ghi nhật ký troubleshooting</div>
+          <div class="problem-item">Có portfolio lab để trình bày khi phỏng vấn</div>
+          <div class="problem-item">Biết đặt câu hỏi đúng khi xử lý sự cố thật</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="process-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Quy trình học</span>
+          <h2>Một buổi học không chỉ xem slide</h2>
+        </div>
+        <div class="process-grid">
+          <div class="step-item"><h3>1. Giải thích bằng sơ đồ</h3><p>Hiểu concept trước: traffic đi đâu, thiết bị nào xử lý, lỗi có thể nằm ở tầng nào.</p></div>
+          <div class="step-item"><h3>2. Làm lab có checklist</h3><p>Cấu hình từng bước, ghi lại lệnh, kiểm tra trạng thái và backup cấu hình.</p></div>
+          <div class="step-item"><h3>3. Cố tình tạo lỗi</h3><p>Thực hành debug lỗi sai VLAN, thiếu route, sai NAT, DNS lỗi hoặc firewall deny.</p></div>
+          <div class="step-item"><h3>4. Tổng kết thành tài liệu</h3><p>Viết lại sơ đồ, IP plan, checklist và nhật ký troubleshooting để dùng lại khi đi làm.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="enterprise" class="enterprise-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">IT Support cho doanh nghiệp</span>
+          <h2>Không chỉ dạy học, mình vẫn giữ dịch vụ support task cho doanh nghiệp</h2>
+          <p>Doanh nghiệp có thể gửi yêu cầu hỗ trợ mạng, firewall, WiFi, endpoint, monitoring hoặc tư vấn hạ tầng. Các yêu cầu này đi vào hệ thống ticket/admin riêng.</p>
+        </div>
+        <div id="enterprise-services" class="services-grid"></div>
+        <div class="section-actions">
+          <a class="btn-primary link-button" href="/support-task.html">Gửi support task doanh nghiệp</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="resources" class="resources">
+      <div class="container resources-grid">
+        <div>
+          <span class="eyebrow">Tài liệu miễn phí</span>
+          <h2>Checklist và template dành cho học viên</h2>
+          <p>Click vào từng tài liệu để mở trang riêng, dễ đọc và dễ chia sẻ link.</p>
+        </div>
+        <div id="resource-list" class="resource-list"></div>
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">FAQ</span>
+          <h2>Câu hỏi thường gặp trước khi đăng ký</h2>
+        </div>
+        <div class="faq-grid">
+          <details open><summary>Tôi chưa biết gì về network thì học được không?</summary><p>Được. Bạn nên bắt đầu từ Network Foundation để nắm IP, subnet, gateway, DNS, DHCP và cách đọc sơ đồ mạng.</p></details>
+          <details><summary>Có cần thiết bị thật không?</summary><p>Không bắt buộc. Giai đoạn đầu có thể dùng Packet Tracer/GNS3/EVE-NG. Khi cần lab thực tế, mình sẽ hướng dẫn chọn thiết bị phù hợp.</p></details>
+          <details><summary>Khóa học có cam kết việc làm không?</summary><p>Không cam kết việc làm. Mục tiêu là giúp bạn có kỹ năng, checklist, lab portfolio và cách trình bày năng lực tốt hơn khi phỏng vấn.</p></details>
+          <details><summary>Doanh nghiệp cần hỗ trợ IT thì gửi ở đâu?</summary><p>Vào trang Support Task để gửi yêu cầu. Bạn sẽ nhận mã ticket và mình quản lý trong admin console.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section id="payment" class="payment">
+      <div class="container payment-grid">
+        <div>
+          <span class="eyebrow">Thanh toán</span>
+          <h2>MoMo QR cho học viên đã được xác nhận lịch học</h2>
+          <div id="payment-steps" class="payment-steps"></div>
+        </div>
+        <div class="bank-card momo-card">
+          <h3>MoMo chuyển khoản</h3>
+          <div class="qr-box">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=0813323305" alt="QR MoMo 0813323305">
+          </div>
+          <div class="bank-row"><span>Số MoMo</span><strong>0813323305</strong></div>
+          <div class="bank-row"><span>Nội dung</span><strong>KH [Tên] [SĐT]</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="track-ticket" class="track-ticket">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">Theo dõi ticket</span>
+          <h2>Kiểm tra trạng thái đăng ký hoặc support task</h2>
+        </div>
+        <div class="track-form">
+          <input type="text" id="search-code" placeholder="Nhập mã ticket (VD: NW-1A2B3C4D)" />
+          <button class="btn-primary" onclick="searchTicket()">Tìm Kiếm</button>
+        </div>
+        <div id="ticket-result" class="ticket-result" style="display: none;"></div>
+      </div>
+    </section>
+  </main>
 
   <footer class="footer">
     <div class="container">
       <div class="footer-content">
         <div class="footer-section">
-          <h3>Duy Network Engineer</h3>
-          <p>Giải pháp network engineering và vận hành hạ tầng cho doanh nghiệp</p>
+          <h3>Duy Network Academy</h3>
+          <p>Học network thực chiến, cấu hình thật, troubleshooting thật, định hướng đi làm rõ ràng.</p>
         </div>
         <div class="footer-section">
-          <h3>Liên Kết</h3>
+          <h3>Liên kết nhanh</h3>
           <ul>
-            <li><a href="https://www.linkedin.com/in/duylenetworktechnical/" target="_blank">LinkedIn</a></li>
-            <li><a href="#services">Dịch vụ</a></li>
-            <li><a href="#create-ticket">Gửi yêu cầu</a></li>
+            <li><a href="/register.html">Đăng ký học</a></li>
+            <li><a href="/support-task.html">Support Task</a></li>
+            <li><a href="/resources/switch-checklist.html">Checklist switch</a></li>
           </ul>
         </div>
         <div class="footer-section">
-          <h3>Hỗ Trợ</h3>
+          <h3>Liên hệ</h3>
           <p>Email: <a href="mailto:levanduy120@gmail.com">levanduy120@gmail.com</a></p>
-          <p>Hotline: 0987654321</p>
-          <p>Website: <a href="https://network.ai.vn" target="_blank">network.ai.vn</a></p>
+          <p>Website: <a href="https://network.ai.vn" target="_blank" rel="noopener noreferrer">network.ai.vn</a></p>
+          <p>MoMo/Zalo: 0813323305</p>
         </div>
       </div>
       <hr class="footer-divider">
-      <p class="footer-copyright">&copy; 2026 Duy Network Engineer. All rights reserved.</p>
+      <p class="footer-copyright">&copy; 2026 Duy Network Academy. All rights reserved.</p>
     </div>
   </footer>
 

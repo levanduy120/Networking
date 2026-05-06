@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Support Task cho doanh nghiệp - Duy Network Academy</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a class="logo" href="/">Duy Network Academy</a>
+      <ul class="nav-links">
+        <li><a href="/">Trang chủ</a></li>
+        <li><a href="/#enterprise">Dịch vụ IT</a></li>
+        <li><a href="/register.html">Đăng ký học</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page-main">
+    <section class="content-hero">
+      <div class="container">
+        <a class="back-link" href="/">← Về trang chủ</a>
+        <span class="eyebrow">Enterprise IT Support</span>
+        <h1>Gửi yêu cầu hỗ trợ IT/network cho doanh nghiệp</h1>
+        <p>Dành cho doanh nghiệp cần hỗ trợ hạ tầng mạng, firewall, WiFi, endpoint, server, monitoring hoặc tư vấn nâng cấp. Mỗi yêu cầu sẽ có mã ticket để theo dõi trạng thái.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container content-layout">
+        <aside class="content-block">
+          <h2>10 nhóm dịch vụ hỗ trợ</h2>
+          <ul class="check-list">
+            <li>Network Infrastructure Setup</li>
+            <li>Network Maintenance & Support</li>
+            <li>Security & Firewall</li>
+            <li>Wireless Solution</li>
+            <li>Office Endpoint Support</li>
+            <li>Network Consulting</li>
+            <li>Remote Support</li>
+            <li>Network Monitoring</li>
+            <li>Cabling & Hardware</li>
+            <li>System Administration</li>
+          </ul>
+        </aside>
+
+        <form id="support-form" class="form js-ticket-form">
+          <div class="form-group"><label>Tên người gửi *</label><input name="customer_name" required></div>
+          <div class="form-group"><label>Email công ty *</label><input type="email" name="customer_email" required></div>
+          <div class="form-group"><label>Số điện thoại/Zalo</label><input name="customer_phone"></div>
+          <div class="form-group"><label>Loại hỗ trợ *</label><select name="service_id" class="service-select" required><option value="">-- Chọn loại hỗ trợ --</option></select></div>
+          <div class="form-group"><label>Tiêu đề task *</label><input name="title" placeholder="VD: Cần kiểm tra VLAN phòng kế toán" required></div>
+          <div class="form-group"><label>Mô tả chi tiết *</label><textarea name="description" rows="6" placeholder="Mô tả hiện trạng, thiết bị liên quan, thời điểm lỗi, số user ảnh hưởng..." required></textarea></div>
+          <div class="form-group"><label>Mức độ ưu tiên</label><select name="priority"><option value="medium">Bình thường</option><option value="high">Cao</option><option value="urgent">Gấp</option><option value="low">Thấp</option></select></div>
+          <button class="btn-primary" type="submit">Gửi support task</button>
+          <div class="form-message" data-form-message style="display:none"></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,4 +1,9 @@
 node_modules/
 .env
+.env.local
 npm-debug.log*
 data/helpdesk.db
+data/*.db
+*.log
+.DS_Store
+Thumbs.db

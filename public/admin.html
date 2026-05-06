@@ -45,13 +45,17 @@
             <div class="stat-number" id="total-tickets">0</div>
             <div class="stat-label">Tổng Tickets</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-open">
             <div class="stat-number" id="open-tickets">0</div>
-            <div class="stat-label">Ticket mở</div>
+            <div class="stat-label">Ticket mới</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card stat-inprogress">
+            <div class="stat-number" id="inprogress-tickets">0</div>
+            <div class="stat-label">Đang xử lý</div>
+          </div>
+          <div class="stat-card stat-closed">
             <div class="stat-number" id="closed-tickets">0</div>
-            <div class="stat-label">Ticket đóng</div>
+            <div class="stat-label">Hoàn tất</div>
           </div>
         </div>
       </div>
@@ -179,6 +183,7 @@
     </div>
   </div>
 
+  <div id="toast-container" class="toast-container"></div>
   <script src="/js/admin.js"></script>
 </body>
 </html>

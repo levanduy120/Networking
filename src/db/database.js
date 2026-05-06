@@ -11,16 +11,16 @@ const dbPath = path.join(dataDir, 'helpdesk.db');
 const db = new sqlite3.Database(dbPath);
 
 const defaultServices = [
-  ['Network Infrastructure Setup', 'Thiết kế, triển khai hạ tầng mạng enterprise', 'desktop'],
-  ['Network Maintenance & Support', 'Bảo trì, hỗ trợ mạng 24/7', 'desktop'],
-  ['Security & Firewall', 'Cấu hình firewall, VPN, bảo mật mạng', 'desktop'],
-  ['Wireless Solution', 'Giải pháp WiFi, mesh network, cấp phát IP', 'desktop'],
-  ['Office Endpoint Support', 'Hỗ trợ user, máy tính, máy in, phần mềm văn phòng', 'desktop'],
-  ['Network Consulting', 'Tư vấn kiến trúc mạng, nâng cấp hạ tầng và chuẩn hóa vận hành', 'desktop'],
-  ['Remote Support', 'Hỗ trợ từ xa qua RDP, TeamViewer', 'desktop'],
-  ['Network Monitoring', 'Giám sát mạng, cảnh báo và báo cáo hiệu suất', 'desktop'],
-  ['Cabling & Hardware', 'Lắp đặt dây cáp, switch, router, cấp phát PoE', 'desktop'],
-  ['System Administration', 'Quản lý server, backup, disaster recovery', 'desktop']
+  ['Network Infrastructure Setup', 'Thiết kế VLAN, IP plan, gateway, switch core/access và kết nối Internet cho văn phòng.', 'desktop'],
+  ['Network Maintenance & Support', 'Bảo trì định kỳ, kiểm tra cấu hình, backup thiết bị và hỗ trợ sự cố mạng doanh nghiệp.', 'desktop'],
+  ['Security & Firewall', 'Cấu hình firewall policy, NAT, VPN, phân vùng mạng và rà soát rule bảo mật.', 'desktop'],
+  ['Wireless Solution', 'Thiết kế WiFi văn phòng, SSID, roaming, guest network, VLAN mapping và tối ưu vùng phủ.', 'desktop'],
+  ['Office Endpoint Support', 'Hỗ trợ máy tính, máy in, phần mềm văn phòng, email client và kết nối mạng người dùng.', 'desktop'],
+  ['Network Consulting', 'Tư vấn kiến trúc mạng, chuẩn hóa sơ đồ, tài liệu vận hành và kế hoạch nâng cấp hạ tầng.', 'desktop'],
+  ['Remote Support', 'Hỗ trợ từ xa qua AnyDesk, RDP, VPN hoặc video call để xử lý lỗi nhanh.', 'desktop'],
+  ['Network Monitoring', 'Giám sát uptime, latency, băng thông, cảnh báo sự cố và báo cáo sức khỏe hệ thống.', 'desktop'],
+  ['Cabling & Hardware', 'Tư vấn/lắp đặt dây mạng, tủ rack, patch panel, switch, router, AP và thiết bị PoE.', 'desktop'],
+  ['System Administration', 'Hỗ trợ server, user account, backup, chia sẻ file, kiểm tra log và khôi phục cơ bản.', 'desktop']
 ];
 
 db.serialize(() => {
@@ -55,12 +55,24 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);
 
+  db.run(`CREATE INDEX IF NOT EXISTS idx_tickets_code ON tickets(ticket_code)`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status)`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_tickets_created ON tickets(created_at)`);
+  db.run(`CREATE INDEX IF NOT EXISTS idx_admin_username ON admin_users(username)`);
+
   db.get('SELECT COUNT(*) as count FROM services', (err, row) => {
     if (!err && row.count === 0) {
       const stmt = db.prepare('INSERT INTO services (name, description, icon) VALUES (?, ?, ?)');
       defaultServices.forEach(service => stmt.run(service));
       stmt.finalize();
     }
+  });
+
+  defaultServices.forEach(([name, description, icon]) => {
+    db.run(
+      'UPDATE services SET description = ?, icon = ? WHERE name = ?',
+      [description, icon, name]
+    );
   });
 
   db.run(

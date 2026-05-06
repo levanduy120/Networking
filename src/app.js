@@ -1,5 +1,7 @@
 const express = require('express');
 require('dotenv').config();
+const helmet = require('helmet');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
@@ -37,6 +39,26 @@ const ticketLimiter = rateLimit({
   message: { error: 'Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau ít phút.' }
 });
 
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https://images.unsplash.com", "https://api.qrserver.com"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
+
+const allowedOrigin = process.env.ALLOWED_ORIGIN;
+if (allowedOrigin) {
+  app.use(cors({ origin: allowedOrigin, methods: ['GET', 'POST', 'PUT', 'DELETE'], credentials: false }));
+}
+
 app.use(bodyParser.json({ limit: '100kb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '100kb' }));
 app.use(express.static(path.join(__dirname, '../public')));
@@ -44,7 +66,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 setInterval(() => {
   const now = Date.now();
   for (const [token, session] of adminSessions.entries()) {
-    if (now - session.createdAt > ADMIN_SESSION_TTL_MS) {
+    if (now - session.lastSeenAt > ADMIN_SESSION_TTL_MS) {
       adminSessions.delete(token);
     }
   }
@@ -54,7 +76,7 @@ function requireAdmin(req, res, next) {
   const token = req.headers['x-admin-token'];
   const session = token ? adminSessions.get(token) : null;
 
-  if (!session || Date.now() - session.createdAt > ADMIN_SESSION_TTL_MS) {
+  if (!session || Date.now() - session.lastSeenAt > ADMIN_SESSION_TTL_MS) {
     if (token) {
       adminSessions.delete(token);
     }
@@ -221,7 +243,8 @@ app.post('/api/admin/logout', requireAdmin, (req, res) => {
 });
 
 app.get('/api/admin/me', requireAdmin, (req, res) => {
-  res.json({ username: req.admin.username });
+  const remainingMs = ADMIN_SESSION_TTL_MS - (Date.now() - req.admin.lastSeenAt);
+  res.json({ username: req.admin.username, sessionTtlMs: ADMIN_SESSION_TTL_MS, sessionRemainingMs: remainingMs });
 });
 
 app.get('/api/admin/tickets', requireAdmin, (req, res) => {
@@ -286,6 +309,14 @@ app.put('/api/admin/services/:id', requireAdmin, (req, res) => {
     return res.status(400).json({ error: 'Tên dịch vụ và mô tả là bắt buộc' });
   }
 
+  if (name.trim().length > 100) {
+    return res.status(400).json({ error: 'Tên dịch vụ không được quá 100 ký tự' });
+  }
+
+  if (description.trim().length > 1000) {
+    return res.status(400).json({ error: 'Mô tả không được quá 1000 ký tự' });
+  }
+
   db.run(
     'UPDATE services SET name = ?, description = ?, icon = ? WHERE id = ?',
     [name.trim(), description.trim(), icon || 'desktop', id],
@@ -342,7 +373,7 @@ app.get('/admin', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  res.status(404).send(`<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 - Không tìm thấy trang</title><style>body{font-family:Segoe UI,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f4f8fb;color:#132238}div{text-align:center}h1{font-size:80px;margin:0;color:#0077b6}p{color:#5e6b7a;font-size:18px}a{color:#0077b6;font-weight:700;text-decoration:none}</style></head><body><div><h1>404</h1><p>Trang này không tồn tại.</p><a href="/">← Về trang chủ</a></div></body></html>`);
 });
 
 app.listen(PORT, () => {
