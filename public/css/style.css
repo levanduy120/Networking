@@ -931,6 +931,173 @@ section {
   font-size: 14px;
 }
 
+/* ============ CERT STRIP ============ */
+.cert-strip {
+  background: var(--soft);
+  padding: 28px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cert-label {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 16px;
+}
+
+.cert-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.cert-badge {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  border: 1.5px solid transparent;
+}
+
+.cert-cisco    { background: #e8f3f8; color: #1d6fa4; border-color: #b8d9ee; }
+.cert-fortinet { background: #fff3e8; color: #c0430a; border-color: #ffd1a8; }
+.cert-paloalto { background: #fff8e8; color: #a06000; border-color: #fde4a0; }
+.cert-mikrotik { background: #f0f8e8; color: #3a6e0a; border-color: #c0e090; }
+.cert-ruijie   { background: #f0e8f8; color: #6a2da0; border-color: #d4b0f0; }
+.cert-eveng    { background: #e8f8f0; color: #0a6e4a; border-color: #90e0c0; }
+.cert-linux    { background: #f8f0e8; color: #6e4a0a; border-color: #e0c090; }
+
+/* ============ MENTOR CARD INFO ============ */
+.mentor-card-info {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 0 0 8px 8px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mentor-card-info strong {
+  color: var(--brand-dark);
+  font-size: 16px;
+}
+
+.mentor-card-info span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.mentor-socials a {
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mentor-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+/* ============ HERO METRICS 4 COLS ============ */
+.hero-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* ============ TESTIMONIALS ============ */
+.testimonials-section {
+  background: var(--soft);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.testimonial-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(19, 34, 56, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.testimonial-highlight {
+  display: inline-block;
+  background: #eef7fb;
+  color: var(--brand-dark);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid #c4dfe9;
+}
+
+.testimonial-card blockquote {
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.65;
+  flex: 1;
+  font-style: italic;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.author-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.testimonial-author > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.testimonial-author strong {
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.testimonial-author span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.author-company {
+  font-size: 12px !important;
+  color: var(--brand) !important;
+  font-weight: 700;
+}
+
 @media (max-width: 900px) {
   .hero-grid,
   .resources-grid,
@@ -950,8 +1117,13 @@ section {
   .process-grid,
   .cred-grid,
   .detail-grid,
-  .footer-content {
+  .footer-content,
+  .testimonials-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .hero-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1020,7 +1192,8 @@ section {
   .cred-grid,
   .faq-grid,
   .detail-grid,
-  .footer-content {
+  .footer-content,
+  .testimonials-grid {
     grid-template-columns: 1fr;
   }
 

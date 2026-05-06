@@ -138,6 +138,30 @@ const eveLabs = [
   }
 ];
 
+const testimonials = [
+  {
+    name: 'Minh Tuấn',
+    role: 'IT Support → Junior Network Engineer',
+    company: 'Công ty logistics, TP.HCM',
+    quote: 'Trước đây tôi chỉ biết cắm dây và restart router. Sau 3 tháng học, tôi đã tự thiết kế VLAN cho văn phòng 80 người, cấu hình FortiGate và viết được tài liệu IP plan bàn giao. Cách dạy theo checklist rất sát với công việc thật.',
+    highlight: 'Tự triển khai mạng văn phòng 80 người'
+  },
+  {
+    name: 'Ngọc Hằng',
+    role: 'Helpdesk → Network Admin',
+    company: 'Retail chain, Hà Nội',
+    quote: 'Lab EVE-NG theo từng vendor giúp tôi hiểu sự khác biệt giữa Cisco và Fortinet. Phần mentor 1:1 cho tôi review lại cấu hình sai mà tự mình không nhận ra được. Sau khóa học tôi tự tin hơn nhiều khi phỏng vấn vị trí Network Engineer.',
+    highlight: 'Thành công phỏng vấn Network Engineer'
+  },
+  {
+    name: 'Phúc Thịnh',
+    role: 'Sinh viên CNTT → Network Intern',
+    company: 'MSP, TP.HCM',
+    quote: 'Học xong Network Foundation và Switching/VLAN, tôi có đủ kiến thức để bắt đầu thực tập tại công ty IT outsourcing. Checklist sau mỗi bài giúp tôi biết mình cần làm được gì trước khi qua bài tiếp theo — rất rõ ràng.',
+    highlight: 'Có thực tập ngay sau 2 tháng học'
+  }
+];
+
 const paymentSteps = [
   {
     title: '1. Gửi đăng ký',
@@ -163,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
   renderLabs();
   renderResources();
   renderPaymentSteps();
+  renderTestimonials();
   loadEnterpriseServices();
   loadServices();
 
@@ -252,6 +277,26 @@ function renderResources() {
       <p>${escapeHtml(resource.description)}</p>
       <span class="card-link">Mở tài liệu</span>
     </a>
+  `).join('');
+}
+
+function renderTestimonials() {
+  const grid = document.getElementById('testimonials-grid');
+  if (!grid) return;
+
+  grid.innerHTML = testimonials.map(t => `
+    <article class="testimonial-card">
+      <div class="testimonial-highlight">${escapeHtml(t.highlight)}</div>
+      <blockquote>"${escapeHtml(t.quote)}"</blockquote>
+      <div class="testimonial-author">
+        <div class="author-avatar">${escapeHtml(t.name.charAt(0))}</div>
+        <div>
+          <strong>${escapeHtml(t.name)}</strong>
+          <span>${escapeHtml(t.role)}</span>
+          <span class="author-company">${escapeHtml(t.company)}</span>
+        </div>
+      </div>
+    </article>
   `).join('');
 }
 
