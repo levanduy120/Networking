@@ -182,34 +182,73 @@ const paymentSteps = [
 ];
 
 document.addEventListener('DOMContentLoaded', function() {
-  renderLearningPaths();
-  renderCourses();
-  renderLabs();
-  renderResources();
-  renderPaymentSteps();
-  renderTestimonials();
-  loadEnterpriseServices();
+  // Render chỉ khi container tồn tại trên trang hiện tại
+  if (document.getElementById('path-grid'))        renderLearningPaths();
+  if (document.getElementById('lab-grid'))         renderLabs();
+  if (document.getElementById('course-grid'))      renderCourses();
+  if (document.getElementById('resource-list'))    renderResources();
+  if (document.getElementById('payment-steps'))    renderPaymentSteps();
+  if (document.getElementById('testimonials-grid')) renderTestimonials();
+  if (document.getElementById('enterprise-services')) loadEnterpriseServices();
+
   loadServices();
 
   document.querySelectorAll('.js-ticket-form').forEach(form => {
     form.addEventListener('submit', createTicket);
   });
 
+  initNavToggle();
+  initScrollAnimations();
+  initCountUp();
+});
+
+function initNavToggle() {
   const navToggle = document.getElementById('nav-toggle');
   const navLinks = document.getElementById('nav-links');
-  if (navToggle && navLinks) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', isOpen);
+  if (!navToggle || !navLinks) return;
+  navToggle.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', isOpen);
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
     });
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', 'false');
-      });
+  });
+}
+
+function initScrollAnimations() {
+  const els = document.querySelectorAll('.fade-section');
+  if (!els.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+}
+
+function initCountUp() {
+  const counters = document.querySelectorAll('.count-up');
+  if (!counters.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.target, 10);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1200;
+      const step = Math.ceil(target / (duration / 16));
+      let current = 0;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 16);
+      io.unobserve(el);
     });
-  }
-});
+  }, { threshold: 0.5 });
+  counters.forEach(el => io.observe(el));
+}
 
 function renderLearningPaths() {
   const grid = document.getElementById('path-grid');

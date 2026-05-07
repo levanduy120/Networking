@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Theo Dõi Ticket - Duy Network Academy</title>
+  <meta name="description" content="Kiểm tra trạng thái đăng ký học hoặc support task bằng mã ticket.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a class="logo" href="/">Duy Network Academy</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Mở menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="/paths.html">Lộ trình</a></li>
+        <li><a href="/labs.html">EVE Labs</a></li>
+        <li><a href="/courses.html">Khóa học</a></li>
+        <li><a href="/#mentor">Mentor</a></li>
+        <li><a href="/support-task.html">IT Support</a></li>
+        <li><a href="/track-ticket.html" class="nav-active">Theo dõi ticket</a></li>
+        <li><a href="/register.html" class="nav-cta">Đăng ký học</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page-main">
+    <section class="content-hero">
+      <div class="container">
+        <a class="back-link" href="/">← Về trang chủ</a>
+        <span class="eyebrow">Theo dõi ticket</span>
+        <h1>Kiểm tra trạng thái yêu cầu của bạn</h1>
+        <p>Nhập mã ticket nhận được qua email sau khi đăng ký học hoặc gửi support task. Mã có dạng <strong>NW-XXXXXXXX</strong>.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container narrow">
+        <div class="track-card">
+          <div class="track-form">
+            <input type="text" id="search-code" placeholder="Nhập mã ticket — VD: NW-1A2B3C4D" autocomplete="off">
+            <button class="btn-primary" onclick="searchTicket()">Tìm kiếm</button>
+          </div>
+          <div id="ticket-result" class="ticket-result" style="display:none"></div>
+        </div>
+
+        <div class="ticket-status-legend">
+          <h3>Ý nghĩa trạng thái</h3>
+          <div class="legend-row"><span class="status-open">Mới tiếp nhận</span><span>Ticket đã được ghi nhận, chờ xử lý.</span></div>
+          <div class="legend-row"><span class="status-in-progress">Đang xử lý</span><span>Đang được xem xét hoặc liên hệ.</span></div>
+          <div class="legend-row"><span class="status-closed">Đã hoàn tất</span><span>Yêu cầu đã được giải quyết.</span></div>
+        </div>
+
+        <div class="track-help">
+          <p>Chưa có mã ticket? Gửi yêu cầu tại:</p>
+          <div class="track-help-links">
+            <a class="btn-secondary link-button" href="/register.html">Đăng ký học</a>
+            <a class="btn-secondary link-button" href="/support-task.html">Gửi support task</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section"><h3>Duy Network Academy</h3><p>Học network thực chiến, cấu hình thật, troubleshooting thật.</p></div>
+        <div class="footer-section"><h3>Học tập</h3><ul><li><a href="/paths.html">Lộ trình học</a></li><li><a href="/labs.html">EVE-NG Labs</a></li><li><a href="/courses.html">Khóa học</a></li></ul></div>
+        <div class="footer-section"><h3>Liên hệ</h3><ul><li><a href="/support-task.html">IT Support</a></li><li><a href="mailto:levanduy120@gmail.com">levanduy120@gmail.com</a></li></ul></div>
+      </div>
+      <hr class="footer-divider">
+      <p class="footer-copyright">&copy; 2026 Duy Network Academy.</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>
