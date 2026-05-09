@@ -51,7 +51,13 @@ db.serialize(() => {
 
       console.log(`Admin user is ready: ${username}`);
       console.log('Password was stored as a bcrypt hash.');
-      db.close();
+      db.close((closeErr) => {
+        if (closeErr) {
+          console.error('Failed to close database:', closeErr.message);
+          process.exit(1);
+        }
+        process.exit(0);
+      });
     }
   );
 });
