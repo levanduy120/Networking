@@ -18,6 +18,7 @@ if (!fs.existsSync(dataDir)) {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
 const adminSessions = new Map();
 const ADMIN_SESSION_TTL_MS = Number(process.env.ADMIN_SESSION_TTL_MINUTES || 120) * 60 * 1000;
 const VALID_STATUSES = new Set(['open', 'in-progress', 'closed']);
@@ -380,7 +381,15 @@ app.get('*', (req, res) => {
   res.status(404).send(`<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404 - Không tìm thấy trang</title><style>body{font-family:Segoe UI,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f4f8fb;color:#132238}div{text-align:center}h1{font-size:80px;margin:0;color:#0077b6}p{color:#5e6b7a;font-size:18px}a{color:#0077b6;font-weight:700;text-decoration:none}</style></head><body><div><h1>404</h1><p>Trang này không tồn tại.</p><a href="/">← Về trang chủ</a></div></body></html>`);
 });
 
-app.listen(PORT, () => {
-  console.log(`Duy Network Engineer portal running at http://localhost:${PORT}`);
-  console.log(`Admin panel: http://localhost:${PORT}/admin`);
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+});
+
+app.listen(PORT, HOST, () => {
+  console.log(`Duy Network Engineer portal running at http://${HOST}:${PORT}`);
+  console.log(`Admin panel: http://${HOST}:${PORT}/admin`);
 });
