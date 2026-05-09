@@ -1,10 +1,16 @@
 #!/usr/bin/env node
 require('dotenv').config();
 const path = require('path');
+const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcryptjs');
 
-const dbPath = path.join(__dirname, 'data', 'helpdesk.db');
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+const dbPath = path.join(dataDir, 'helpdesk.db');
 const db = new sqlite3.Database(dbPath);
 
 const username = process.env.ADMIN_USERNAME || 'admin';
