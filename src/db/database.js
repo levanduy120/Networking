@@ -3,12 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
 
-const dataDir = path.join(__dirname, '../../data');
+const dataDir = process.env.DATABASE_DIR || process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(__dirname, '../../data');
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
 
 const dbPath = path.join(dataDir, 'helpdesk.db');
+console.log(`Using SQLite database: ${dbPath}`);
 const db = new sqlite3.Database(dbPath);
 
 const defaultServices = [
