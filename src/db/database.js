@@ -1,6 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
 
 const dataDir = path.join(__dirname, '../../data');
 if (!fs.existsSync(dataDir)) {
@@ -99,9 +100,31 @@ db.serialize(() => {
 
   db.get('SELECT COUNT(*) as count FROM admin_users', (err, row) => {
     if (!err && row.count === 0) {
-      console.log('No admin users found. Please run: node setup-admins.js');
+      console.log('No admin users found.');
     }
   });
+
+  const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (adminPassword && adminPassword.length >= 8) {
+    const passwordHash = bcrypt.hashSync(adminPassword, 12);
+    db.run(
+      `INSERT INTO admin_users (username, password)
+       VALUES (?, ?)
+       ON CONFLICT(username) DO UPDATE SET password = excluded.password`,
+      [adminUsername, passwordHash],
+      (adminErr) => {
+        if (adminErr) {
+          console.error('Admin setup failed:', adminErr.message);
+          return;
+        }
+        console.log(`Admin user is ready: ${adminUsername}`);
+      }
+    );
+  } else {
+    console.warn('ADMIN_PASSWORD is missing or shorter than 8 characters. Admin login is disabled until it is set.');
+  }
 });
 
 module.exports = db;
